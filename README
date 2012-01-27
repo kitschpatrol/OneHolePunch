@@ -1,1 +1,4 @@
 An iPhone app that punches circles out of the environment and collects them in your pocket; eventually outputting them to a 2D printer.
+
+Note core hack to get autofocus.
+Line 150 of AVFoundationVideoGrabber.MM

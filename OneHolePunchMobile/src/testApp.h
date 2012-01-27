@@ -31,7 +31,14 @@ class testApp : public ofxiPhoneApp{
 		ofxCvColorImage colorCv;
 	//		ofxCvColorImage colorCvSmall;
 		ofxCvGrayscaleImage grayCv;
-		
+
+	int colorWidth;
+	int colorHeight;
+	
+	// GUI
+	bool drawDebug;
+	
+
 	
 	
 	/////////// circles ////////
@@ -47,12 +54,5 @@ class testApp : public ofxiPhoneApp{
 	float previousRadius;
 	
 	string fNameSaved;
-	
-	float lerpPosX;
-	float lerpPosY;    
-	float lerpRad;
-	
-	
-	bool gotFirstCameraFrame;
 		
 };
