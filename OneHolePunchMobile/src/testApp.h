@@ -9,6 +9,8 @@
 //ON IPHONE NOTE INCLUDE THIS BEFORE ANYTHING ELSE
 #include "ofxOpenCv.h"
 
+#include "circleTrack.h"
+
 class testApp : public ofxiPhoneApp{
 	
 	public:
@@ -23,18 +25,34 @@ class testApp : public ofxiPhoneApp{
 		void touchDoubleTap(ofTouchEventArgs &touch);
 		void touchCancelled(ofTouchEventArgs &touch);
 
-		ofImage img;
-				
+
 		ofVideoGrabber grabber;
-		ofTexture tex;
-		unsigned char * pix;
 		
 		ofxCvColorImage colorCv;
-		ofxCvColorImage colorCvSmall;
+	//		ofxCvColorImage colorCvSmall;
 		ofxCvGrayscaleImage grayCv;
-		ofxCvHaarFinder finder;
 		
-		ofImage colorImg;
+	
+	
+	/////////// circles ////////
+	void houghCircles(ofxCvGrayscaleImage sourceImg );		/// calculate circle detection
+	void drawCircles();
+	
+	vector <CircleTrack> myCircles;
+	CvMemStorage* storage;
+	CvSeq* circles;
+	IplImage* gray; 
+	int circID;
+	ofPoint previousPos;
+	float previousRadius;
+	
+	string fNameSaved;
+	
+	float lerpPosX;
+	float lerpPosY;    
+	float lerpRad;
+	
+	
+	bool gotFirstCameraFrame;
 		
-		vector <ofxCvBlob> faces;
 };

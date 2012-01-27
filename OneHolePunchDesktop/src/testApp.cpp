@@ -25,7 +25,7 @@ void testApp::update(){
 	if (vidGrabber.isFrameNew()) {
 		colorImg.setFromPixels(vidGrabber.getPixels(), 320,240);
 		grayImage = colorImg;
-		houghCircles(grayImage);	
+		houghCircles(grayImage);
 	}
 }
 
@@ -61,7 +61,7 @@ void testApp::draw(){
 	ofSetHexColor(0xffffff);
 	char reportStr[1024];
 	sprintf(reportStr, "threshold %i (press: +/-)\nnum circs found %i, fps: %f", threshold, circles->total, ofGetFrameRate());
-	ofDrawBitmapString(reportStr, 20, 600);
+	ofDrawBitmapString(reportStr, 20, 40);
 	drawCircles();
 }
 
