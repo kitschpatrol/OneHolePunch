@@ -23,12 +23,11 @@ void testApp::setup(){
     CvSeq* circles = new CvSeq;
 
     ofSetFrameRate(60);
-
+    circID = 0;
     
 	///// cpanel ////
 	
 	panel.setup("control", ofGetWidth()-250, 0, 250, ofGetHeight());
-	
 	panel.addPanel("image processing", 1, false);
 	panel.setWhichPanel("image processing");	
 	panel.addSlider("theshold", "THRESHOLD", 80,0,255, true);	
@@ -130,8 +129,8 @@ void testApp::draw(){
 		pos.y = (int)pos.y;
 		float radius = cvRound(p[2]);
          
-        lerpPosX = ofLerp(lerpPosX, pos.x, 0.1);
-        lerpPosY = ofLerp(lerpPosY, pos.y, 0.1);
+        lerpPosX = ofLerp(lerpPosX, pos.x, 0.4);
+        lerpPosY = ofLerp(lerpPosY, pos.y, 0.4);
         lerpRad = ofLerp(lerpRad, radius, 0.08);        
         
         ofSetColor( 255, 0, 0 );
@@ -147,8 +146,6 @@ void testApp::draw(){
 	char reportStr[1024];
 	sprintf(reportStr, "threshold %i (press: +/-)\nnum circs found %i, fps: %f", threshold, circles->total, ofGetFrameRate());
 	ofDrawBitmapString(reportStr, 20, 600);
-
-    panel.draw();
     drawCircles();
 
 }
@@ -207,6 +204,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg )
             {
 				myCircles[circs].lastSeen = ofGetFrameNum();
 				myCircles[circs].radius = radius;
+                myCircles[circs].pos = pos;
 				myCircles[circs].isAlive += 1;
 				cFound = true;
 			}
@@ -255,7 +253,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg )
 			int	radiusT = iter->radius;
             
 			iter = myCircles.erase(iter);
-			cout << "created trace at: "<< tracePos.x << ", " << tracePos.y << endl;
+			cout << "shape deleted at: "<< tracePos.x << ", " << tracePos.y << endl;
 			
 			
 			

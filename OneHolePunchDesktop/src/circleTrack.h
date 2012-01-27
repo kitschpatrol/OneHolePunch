@@ -26,6 +26,10 @@ class CircleTrack {
 		bool drawMe;
 		bool isSetUp;
 		bool debug;
+    
+        float lerpPosX;
+        float lerpPosY;    
+        float lerpRad;
 
 	
 	void setup () 
@@ -39,22 +43,29 @@ class CircleTrack {
 		}
 	}
 	
+ 
+    
 	
 	void draw () 
     {
 		int yLoc = (int)2*radius;
 		int xLoc = (int)(2*radius * (4/3));
 		
+        lerpPosX = ofLerp(lerpPosX, pos.x, 0.1);
+        lerpPosY = ofLerp(lerpPosY, pos.y, 0.1);
+        lerpRad = ofLerp(lerpRad, radius, 0.08);
+        
+        
 		if (drawMe) 
         {
 			ofPushMatrix();
-			ofTranslate(pos.x, pos.y, 0);						
+			ofTranslate(lerpPosX, lerpPosY, 0);						
 			
 			if (true) {
 				ofPushStyle();
 				ofNoFill();
 				ofSetColor(0, 255, 0,255);
-				ofCircle(0, 0, radius);
+				ofCircle(0, 0, lerpRad);
 				ofCircle(0, 0, 3);
 				ofFill();
 				char reportCirc[1024];
