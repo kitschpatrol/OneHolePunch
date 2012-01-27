@@ -1,0 +1,16 @@
+# Adapted from the OF gitignore
+
+# Binaries
+*.mode*
+build/
+obj/
+*.o
+*.app/
+
+# XCode Files
+*.pbxuser
+*.perspectivev3
+xcuserdata/
+
+# OSX Cruft
+*.DS_Store
