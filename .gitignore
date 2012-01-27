@@ -7,10 +7,12 @@ obj/
 *.o
 *.app/
 
+
 # XCode Files
 *.pbxuser
 *.perspectivev3
 xcuserdata/
+DerivedData/
 
 # OSX Cruft
 *.DS_Store
