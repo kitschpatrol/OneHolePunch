@@ -37,7 +37,18 @@ void testApp::update(){
         ofPixels  videoTexture;
 		colorImg.setFromPixels(vidGrabber.getPixels(), 320,240);
 		grayImage = colorImg;
-		houghCircles(grayImage);
+		houghCircles(grayImage);	
+        pix = vidGrabber.getPixelsRef();
+        
+        for ( int i=0 ; i<punched.size(); i++) {
+            punched[i].update();
+            punched[i].goToTarget( ofVec3f( mouseX,mouseY,0), 100);
+            
+            for ( int j=0 ; j<punched.size(); j++) 
+            {
+                if ( j != i ) punched[i].runFromTarget( punched[j].pos,1 );
+            }
+        }
 	}
 }
 
@@ -50,8 +61,8 @@ void testApp::draw()
 	// finally, a report:
 	ofSetHexColor(0xffffff);
 	char reportStr[1024];
-	sprintf(reportStr, "threshold %i (press: +/-)\nnum circs found %i, fps: %f", threshold, circles->total, ofGetFrameRate());
-	ofDrawBitmapString(reportStr, 20, 40);
+	sprintf(reportStr, "threshold %i (press: +/-)\nnum circs found %i, fps: %f", threshold, circCount,ofGetFrameRate());
+	ofDrawBitmapString(reportStr, 20, 600);
 	drawCircles();
     //tex.draw( 400,400,destWidth,destHeight);
     
