@@ -13,6 +13,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		25042D3314D3910100CD11B3 /* GuiView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 25042D3114D3910100CD11B3 /* GuiView.mm */; };
 		25042D3414D3910100CD11B3 /* GuiView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25042D3214D3910100CD11B3 /* GuiView.xib */; };
+		251EB5FC14D3CC4B00028CA9 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 251EB5FB14D3CC4B00028CA9 /* arrow.png */; };
 		25974D4A14D28F5C0047A058 /* opencv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25974D4914D28F5C0047A058 /* opencv.a */; };
 		259da76c028adaa20996723e102a6ccd /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ce9c7160245b19131dae61282ee6cb53 /* ofxCvColorImage.cpp */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
@@ -66,6 +67,7 @@
 		25042D3014D3910100CD11B3 /* GuiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuiView.h; sourceTree = "<group>"; };
 		25042D3114D3910100CD11B3 /* GuiView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GuiView.mm; sourceTree = "<group>"; };
 		25042D3214D3910100CD11B3 /* GuiView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GuiView.xib; sourceTree = "<group>"; };
+		251EB5FB14D3CC4B00028CA9 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		25974D4914D28F5C0047A058 /* opencv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = opencv.a; path = ../../../addons/ofxOpenCv/libs/opencv/lib/iphone/opencv.a; sourceTree = "<group>"; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		32CA4F630368D1EE00C91783 /* iPhone_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhone_Prefix.pch; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				BB24DD8C10DA77E000E9C588 /* Default.png */,
+				251EB5FB14D3CC4B00028CA9 /* arrow.png */,
 				BB24DD8D10DA77E000E9C588 /* Icon.png */,
 			);
 			name = data;
@@ -365,6 +368,7 @@
 				E41D3ED713B38FB500A75A5D /* Project.xcconfig in Resources */,
 				E41D3EE613B3906D00A75A5D /* CoreOF.xcconfig in Resources */,
 				25042D3414D3910100CD11B3 /* GuiView.xib in Resources */,
+				251EB5FC14D3CC4B00028CA9 /* arrow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
