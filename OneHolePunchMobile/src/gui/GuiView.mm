@@ -121,6 +121,24 @@
 	[self setSliderValueString:ofxStringToNSString(statusStr)]; 	
 }
 
+-(IBAction)adjustBounceFactor:(id)sender {
+	UISlider * slider = sender;
+	
+	particle::bounceFactor = [slider value];
+	
+	string statusStr = " Value: " + ofToString(particle::bounceFactor, 2);
+	[self setSliderValueString:ofxStringToNSString(statusStr)]; 
+}
+
+-(IBAction)adjustAccelerometerForce:(id)sender {
+	UISlider * slider = sender;
+	
+	particle::accelerometerForce = [slider value];
+	
+	string statusStr = " Value: " + ofToString(particle::accelerometerForce, 2);
+	[self setSliderValueString:ofxStringToNSString(statusStr)]; 
+}
+
 
 -(IBAction)debugSwitch:(id)sender {
 	UISwitch * toggle = sender;

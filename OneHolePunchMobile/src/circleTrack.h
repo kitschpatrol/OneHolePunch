@@ -3,14 +3,11 @@
 #include "ofmain.h"
 
 class CircleTrack {
-
 	public:
-    
-        CircleTrack ( ofPoint _pos );
-    
-        void setup();
-        void update();
-        void draw();
+		CircleTrack(ofPoint _pos);    
+		void setup();
+		void update();
+		void draw();
         
 		ofPoint pos;
 		ofPoint acc;
@@ -23,16 +20,7 @@ class CircleTrack {
 		bool isSetUp;
 		bool debug;
     
-        float lerpPosX;
-        float lerpPosY;    
-        float lerpRad;
-
-	
+		float lerpPosX;
+		float lerpPosY;    
+		float lerpRad;
 };
-
-	
-
-
-	
-	
-	

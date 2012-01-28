@@ -30,8 +30,7 @@ void testApp::setup(){
 	grayCv.allocate(cvScaledWidth, cvScaledHeight);
 	
 	cout << "cvScaledWidth: " << cvScaledWidth << endl;
-	cout << "cvScaledHeight: " << cvScaledHeight << endl;	
-	
+	cout << "cvScaledHeight: " << cvScaledHeight << endl;
 
 	// Initialize Variables
 	CvSeq* circles = new CvSeq;
@@ -47,6 +46,10 @@ void testApp::setup(){
 	param2 = 20;
 	minRadius = 40;
 	maxRadius = 300;	
+	
+	// Initialize Particles
+//	particle::bounceFactor = 0.7;
+//	particle::accelerometerForce = 0.2;	
 	
 	// Circle tracking
 	tex.allocate(ofGetWidth(), ofGetHeight(), GL_RGB );	
@@ -102,8 +105,8 @@ void testApp::update(){
 	}
 	
 	for (int i = 0; i < punched.size(); i++) {
-		punched[i].update();
-		punched[i].mouse = ofVec3f(mouseX, mouseY, 0);
+		punched[i].update(ofxAccelerometer.getForce().x, ofxAccelerometer.getForce().y);
+		//punched[i].mouse = ofVec3f(mouseX, mouseY, 0);
 	}
 	
 	ofSoundUpdate();	
@@ -227,7 +230,6 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		int isAlive = iter->isAlive;
     
 		// kill old particles;
-		
 		if ( (ofGetFrameNum()-life) > 50 ) 
 		{
 			

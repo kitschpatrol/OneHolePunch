@@ -284,13 +284,13 @@
 			isa = PBXGroup;
 			children = (
 				25042D2F14D3910100CD11B3 /* gui */,
-				251BC70E14D45AC6006B20C8 /* particle.h */,
-				251BC70D14D45AC6006B20C8 /* particle.cpp */,
-				251BC70F14D45AC6006B20C8 /* circleTrack.h */,
-				251BC71014D45AC6006B20C8 /* circleTrack.cpp */,
 				E4D8936B11527B74007E1F53 /* main.mm */,
 				E4D8936C11527B74007E1F53 /* testApp.h */,
 				E4D8936D11527B74007E1F53 /* testApp.mm */,
+				251BC70F14D45AC6006B20C8 /* circleTrack.h */,
+				251BC71014D45AC6006B20C8 /* circleTrack.cpp */,
+				251BC70E14D45AC6006B20C8 /* particle.h */,
+				251BC70D14D45AC6006B20C8 /* particle.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
