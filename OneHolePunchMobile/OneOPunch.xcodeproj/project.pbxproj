@@ -450,6 +450,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Eric Mika";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPhone_Prefix.pch;
 				INFOPLIST_FILE = "ofxiphone-Info.plist";
@@ -461,6 +462,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = OneOPunch;
+				PROVISIONING_PROFILE = "6E7B9E2F-B172-4248-AFC9-F88D950D4583";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -468,6 +470,7 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Eric Mika";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPhone_Prefix.pch;
 				INFOPLIST_FILE = "ofxiphone-Info.plist";
@@ -479,6 +482,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = OneOPunch;
+				PROVISIONING_PROFILE = "6E7B9E2F-B172-4248-AFC9-F88D950D4583";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

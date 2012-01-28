@@ -185,7 +185,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			
 		} else {
 			
-			if (iter->isAlive > 3) 
+			if (iter->isAlive > 0) // used to be 3? 
             {
 				iter->drawMe = true;
 			} else 

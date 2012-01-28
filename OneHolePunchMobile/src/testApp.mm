@@ -50,7 +50,7 @@ void testApp::setup(){
 	arrow.loadImage("arrow.png");
 	arrow.setAnchorPercent(1.0, 0.5);	
 	
-	// Sounds
+	// Sounds, the .caf file is big-endian and doesn't work?
 	popSound.loadSound("sounds/punched.wav");	
 	popSound.setVolume(1);	
 	popSound.setMultiPlay(true);
