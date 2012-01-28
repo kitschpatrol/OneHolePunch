@@ -187,7 +187,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<float key="IBUIValue">20</float>
+						<float key="IBUIValue">50</float>
 						<float key="IBUIMinValue">1</float>
 						<float key="IBUIMaxValue">300</float>
 						<reference key="IBUIMinimumTrackTintColor" ref="661509156"/>
@@ -429,8 +429,8 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<float key="IBUIValue">0.80000001192092896</float>
-						<float key="IBUIMaxValue">3</float>
+						<float key="IBUIValue">6</float>
+						<float key="IBUIMaxValue">10</float>
 						<reference key="IBUIMinimumTrackTintColor" ref="661509156"/>
 						<reference key="IBUIMaximumTrackTintColor" ref="661509156"/>
 					</object>

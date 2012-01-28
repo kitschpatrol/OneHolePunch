@@ -39,7 +39,8 @@ class testApp : public ofxiPhoneApp{
 		// Circle Extraction
 		vector <particle> punched;	
 
-
+		int lastCircleFoundFrame;
+		
 	
 	private:
 		// Camera

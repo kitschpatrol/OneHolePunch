@@ -1,7 +1,7 @@
 #include "particle.h"
 
 float particle::bounceFactor = 0.2;
-float particle::accelerometerForce = 3;	
+float particle::accelerometerForce = 6;	
 
 particle::particle( ofVec3f _pos, int _id, float _size, ofImage _circleImage) {
 	circleImage = _circleImage;
@@ -24,7 +24,7 @@ void particle::update(float accelX, float accelY) {
 	
 	//float accelR = 1;
 	
-	rotationVelocity = (vel.x); //particle::accelerometerForce * accelR * ofRandomuf();
+	rotationVelocity = (vel.x / 2) + (vel.y / 2); //particle::accelerometerForce * accelR * ofRandomuf();
 	
 	rotation += rotationVelocity;
 	
@@ -32,24 +32,24 @@ void particle::update(float accelX, float accelY) {
 	pos += vel;
 	
 	// check boundaries
-	if (pos.x < size) {
-		pos.x = size;
+	if (pos.x < size / 2) {
+		pos.x = size / 2;
 		vel.x *= -particle::bounceFactor;
-	} else if(pos.x >= ofGetWidth() - size) {
-		pos.x = ofGetWidth() - size;
+	} else if(pos.x >= ofGetWidth() - size / 2) {
+		pos.x = ofGetWidth() - size / 2;
 		vel.x *= -particle::bounceFactor;
 	}
 	
-	if (pos.y < size) {
-		pos.y = size;
+	if (pos.y < size / 2) {
+		pos.y = size / 2;
 		vel.y *= -particle::bounceFactor;
-	} else if(pos.y >= ofGetHeight() - size) {
-		pos.y = ofGetHeight() - size;
+	} else if (pos.y >= ofGetHeight() - size / 2) {
+		pos.y = ofGetHeight() - size / 2;
 		vel.y *= -particle::bounceFactor; 
 	}
 	
 	size *= 0.98;
-	size = ofClamp(size, iniSize * 0.5, 1000);
+	size = ofClamp(size, iniSize * 0.25, 1000);
 }
 
 

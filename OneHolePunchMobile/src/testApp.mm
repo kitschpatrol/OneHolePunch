@@ -44,7 +44,7 @@ void testApp::setup(){
 	minDist = 35;
 	param1 = 2;
 	param2 = 20;
-	minRadius = 40;
+	minRadius = 50;
 	maxRadius = 300;	
 	
 	minCircleRadius = 10;
@@ -52,7 +52,7 @@ void testApp::setup(){
 	
 	// Initialize Particles
 	particle::bounceFactor = 0.2;
-	particle::accelerometerForce = 3;	
+	particle::accelerometerForce = 6;	
 	
 	// Accelerometer Debug Arrow
 	arrow.loadImage("arrow.png");
@@ -136,9 +136,9 @@ void testApp::draw(){
 	if (debug) {
 		grayCv.draw(0, 0);
 		drawAccelArrow();		
+		drawCircles();			
 	}
 
-	drawCircles();	
 	
 	for (int i = 0; i < punched.size(); i++) {
 		punched[i].draw();
@@ -203,7 +203,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			}
 		}
 		
-		if (!cFound) {
+		if (((ofGetFrameNum() - lastCircleFoundFrame) > 30) && (!cFound)) {
 			radius *= 1.2; // Grow 10%
 			CircleTrack c = CircleTrack(pos);
 			c.pos = pos;
@@ -219,6 +219,8 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			c.iD = circID;
 
 			
+			
+			
 			if (c.radius > 0) {
 				myCircles.push_back(c);
 				circID++;
@@ -230,7 +232,6 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 				int cropHeight = ofMap(radius * 2, 0, cvScaledHeight, 0, cameraHeight);
 				
 				
-				/////// cam shift ////////
 				if (useTracker) {
 					tracker.onStartSelect(cropX, cropY);
 					tracker.onSelectUpdate(cropX + cropWidth, cropY + cropHeight);
@@ -279,6 +280,9 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 				circleParticle.size = ofMap(radius, 0, cvScaledHeight, 0, ofGetHeight()) * 2;	
 				circleParticle.iniSize = circleParticle.size;
 				punched.push_back(circleParticle);
+
+				lastCircleFoundFrame = ofGetFrameNum();
+				
 
 				// Play the sound... Bigger circles have lower pitch
 				minCircleRadius = fminf((float)radius, minCircleRadius);
