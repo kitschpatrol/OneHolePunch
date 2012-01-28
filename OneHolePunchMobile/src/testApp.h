@@ -25,6 +25,9 @@ class testApp : public ofxiPhoneApp{
 		void touchDoubleTap(ofTouchEventArgs &touch);
 		void touchCancelled(ofTouchEventArgs &touch);
 
+	
+		void enableDebug();
+		void disableDebug();
 
 		ofVideoGrabber grabber;
 		
@@ -46,7 +49,7 @@ class testApp : public ofxiPhoneApp{
 	int cvScaledHeight;
 	
 	// GUI
-	bool drawDebug;
+	bool debug;
 	
 	
 	ofImage colorView;
@@ -54,6 +57,7 @@ class testApp : public ofxiPhoneApp{
 	
 	
 	/////////// circles ////////
+	int currentTrackedCircleCount;
 	void houghCircles(ofxCvGrayscaleImage sourceImg );		/// calculate circle detection
 	void drawCircles();
 	
@@ -69,6 +73,7 @@ class testApp : public ofxiPhoneApp{
 	
 	
 	// GUI parameters
+	int blurAmount;
 	double hueRes;
 	double minDist;
 	double param1;

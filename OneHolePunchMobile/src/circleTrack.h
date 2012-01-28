@@ -1,14 +1,3 @@
-/*
- *  circleTrack.h
- *  lolWellFresh
- *
- *  Created by Tamar Ziv on 17/4/11.
- *  Copyright 2011 __MyCompanyName__. All rights reserved.
- *
- */
-
-
-
 #pragma once
 #include "ofmain.h"
 

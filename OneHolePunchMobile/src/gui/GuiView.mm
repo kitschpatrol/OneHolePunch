@@ -1,14 +1,5 @@
-//
-//  GuiView.m
-//  iPhone Empty Example
-//
-//  Created by theo on 26/01/2010.
-//  Copyright 2010 __MyCompanyName__. All rights reserved.
-//
-
 #import "GuiView.h"
 #include "ofxiPhoneExtras.h"
-
 
 @implementation GuiView
 
@@ -17,94 +8,129 @@
 	myApp = (testApp*)ofGetAppPtr();
 }
 
-//----------------------------------------------------------------
--(void)setStatusString:(NSString *)trackStr {
-	displayText.text = trackStr;
+// Outlets
+-(void)setSliderValueString:(NSString *)value {
+	sliderValueText.text = value;
+}
+
+-(void)setFrameRateString:(NSString *)frameRate {
+	frameRateText.text = frameRate;
+}
+
+-(void)setCircleCountString:(NSString *)circleCount {
+	circleCountText.text = circleCount;
 }
 
 
--(void)setFPSString:(NSString *)fpsStr {
-	fpsText.text = fpsStr;
-}
-
-
-//----------------------------------------------------------------
+// Inlets
 -(IBAction)back:(id)sender {
 	self.view.hidden = YES;
 }
 
 
--(IBAction)adjustLerpRad:(id)sender {
+//-(IBAction)adjustLerpRad:(id)sender {
+// 	UISlider * slider = sender;
+//	
+//	myApp->lerpRad = [slider value];
+//	
+//	string statusStr = " Value: " + ofToString(myApp->lerpRad);
+//
+//	[self setSliderValueString:ofxStringToNSString(statusStr)];   
+//}
+//
+//
+//-(IBAction)adjustLerpPos:(id)sender {
+// 	UISlider * slider = sender;
+//	
+//	myApp->lerpPos = [slider value];
+//	
+//	string statusStr = " Value: " + ofToString(myApp->lerpPos, 2);
+//	[self setSliderValueString:ofxStringToNSString(statusStr)];   
+//}
+
+
+-(IBAction)adjustHueRes:(id)sender {
  	UISlider * slider = sender;
-	printf("slider adjustLerpRad is - %f\n", [slider value]);
 	
-	myApp->lerpRad = 3 + [slider value] * 28;
+	myApp->hueRes = [slider value];
 	
-	string statusStr = " Status: lerpRad is " + ofToString(myApp->lerpRad);
-	[self setStatusString:ofxStringToNSString(statusStr)];   
+	string statusStr = " Value: " + ofToString(myApp->hueRes, 2);
+	[self setSliderValueString:ofxStringToNSString(statusStr)];   
 }
-//----------------------------------------------------------------
-
--(IBAction)adjustLerpPos:(id)sender
-{
- 	UISlider * slider = sender;
-	printf("slider adjustLerpPos is - %f\n", [slider value]);
-	
-	myApp->lerpPos = 3 + [slider value] * 28;
-	
-	string statusStr = " Status: lerp pos is " + ofToString(myApp->lerpPos);
-	[self setStatusString:ofxStringToNSString(statusStr)];   
-}
-//----------------------------------------------------------------
 
 
--(IBAction)adjustHueRes:(id)sender
-{
- 	UISlider * slider = sender;
-	printf("slider adjustHueRes is - %f\n", [slider value]);
-	
-	myApp->hueRes = 3 + [slider value] * 28;
-	
-	string statusStr = " Status: hueRes is " + ofToString(myApp->hueRes);
-	[self setStatusString:ofxStringToNSString(statusStr)];   
-}
-//----------------------------------------------------------------
-
--(IBAction)adjustHueMinDist:(id)sender
-{
+-(IBAction)adjustHueMinDist:(id)sender {
     UISlider * slider = sender;
-	printf("slider adjustHueRes is - %f\n", [slider value]);
 	
 	myApp->minDist = [slider value];
 	
-	string statusStr = " Status: minDist is " + ofToString(myApp->minDist);
-	[self setStatusString:ofxStringToNSString(statusStr)]; 
+	string statusStr = " Value: " + ofToString(myApp->minDist, 2);
+	[self setSliderValueString:ofxStringToNSString(statusStr)]; 
 }
 
-//----------------------------------------------------------------
 
--(IBAction)adjustHueParam1:(id)sender
-{
+-(IBAction)adjustHueParam1:(id)sender {
     UISlider * slider = sender;
-	printf("slider param1 is - %f\n", [slider value]);
 	
-	myApp->param1 = 3 + [slider value] * 28;
+	myApp->param1 = [slider value];
 	
-	string statusStr = " Status: param1 is " + ofToString(myApp->param1);
-	[self setStatusString:ofxStringToNSString(statusStr)]; 
+	string statusStr = " Value: " + ofToString(myApp->param1, 2);
+	[self setSliderValueString:ofxStringToNSString(statusStr)]; 
 }
 
-//----------------------------------------------------------------
 
--(IBAction)adjustHueParam2:(id)sender
-{
-    UISlider * slider = sender;
-	printf("slider param2 is - %f\n", [slider value]);
+-(IBAction)adjustHueParam2:(id)sender {
+	UISlider * slider = sender;
 	
-	myApp->param2 = 3 + [slider value] * 28;
+	myApp->param2 = [slider value];
 	
-	string statusStr = " Status: param2 is " + ofToString(myApp->param2);
-	[self setStatusString:ofxStringToNSString(statusStr)]; 
+	string statusStr = " Value: " + ofToString(myApp->param2, 2);
+	[self setSliderValueString:ofxStringToNSString(statusStr)]; 
+}
+
+-(IBAction)adjustMinRadius:(id)sender {
+	UISlider * slider = sender;
+	
+	myApp->minRadius = [slider value];
+	
+	string statusStr = " Value: " + ofToString(myApp->minRadius, 0);
+	[self setSliderValueString:ofxStringToNSString(statusStr)]; 
+}
+
+
+-(IBAction)adjustMaxRadius:(id)sender {
+	UISlider * slider = sender;
+	
+	myApp->maxRadius = [slider value];
+	
+	string statusStr = " Value: " + ofToString(myApp->maxRadius, 0);
+	[self setSliderValueString:ofxStringToNSString(statusStr)]; 
+}
+
+-(IBAction)adjustBlurAmount:(id)sender {
+		UISlider * slider = sender;
+	
+	myApp->blurAmount = [slider value];
+	// Must be odd
+	
+	if (myApp->blurAmount % 2 == 0) {
+		myApp->blurAmount = myApp->blurAmount - 1;
+	}
+	
+	string statusStr = " Value: " + ofToString(myApp->blurAmount, 0);
+	[self setSliderValueString:ofxStringToNSString(statusStr)]; 	
+}
+
+
+-(IBAction)debugSwitch:(id)sender {
+	UISwitch * toggle = sender;
+	
+	if ([toggle isOn]) {
+		myApp->enableDebug();
+	}
+	else {
+		myApp->disableDebug();		
+	}
 }
 
 

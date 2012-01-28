@@ -2,7 +2,7 @@
 
 #include "GuiView.h"
 
-GuiView * GuiViewController;
+GuiView * guiViewController;
 
 //--------------------------------------------------------------
 void testApp::setup(){	
@@ -23,7 +23,7 @@ void testApp::setup(){
 	
 	
 	// set up cv image, this is where we search for circles
-	cvImageScaleFactor = 2; // divide by this for CV, use power of two
+	cvImageScaleFactor = 2; // divide by this for CV, use power of two // do this as a param to CV instead?
 	cvScaledWidth = cvOriginalWidth / cvImageScaleFactor;
 	cvScaledHeight = cvOriginalHeight / cvImageScaleFactor;	
 	
@@ -34,27 +34,31 @@ void testApp::setup(){
 	
 	CvSeq* circles = new CvSeq;
 	
-	circID = 0;	
+	circID = 0;
 	
 	// todo disable grayCv texture if not drawing?
-	drawDebug = false;
+	debug = false;
+	
+	currentTrackedCircleCount = 0;
 	
 	// initial cv parameters
-	hueRes = 2; 
-	minDist = 40;
-	param1 = 100;
-	param2 = 100;
-	minRadius = 0;
-	maxRadius = 0;	
+	blurAmount = 5;
+	hueRes = 1;
+	minDist = 30;
+	param1 = 2;
+	param2 = 20;
+	minRadius = 20;
+	maxRadius = 300;	
 	
-	GuiViewController	= [[GuiView alloc] initWithNibName:@"GuiView" bundle:nil];
-	[ofxiPhoneGetUIWindow() addSubview:GuiViewController.view];	
+	guiViewController	= [[GuiView alloc] initWithNibName:@"GuiView" bundle:nil];
+	[ofxiPhoneGetUIWindow() addSubview:guiViewController.view];
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
+	[guiViewController setFrameRateString: ofxStringToNSString(ofToString("FPS: " + ofToString(ofGetFrameRate(), 0)))];
+	[guiViewController setCircleCountString: ofxStringToNSString(ofToString("Circles: " + ofToString(currentTrackedCircleCount)))];	
 
-	
 	grabber.update();
 	
 	if (grabber.isFrameNew()) {
@@ -89,13 +93,12 @@ void testApp::draw(){
 	ofBackground(255, 0, 0); // See any gaps easily
 	ofSetColor(255);
 	
-	if (drawDebug) {
-		grayCv.draw(0, 0, 640, 960);
-		
+	if (debug) {
+		//grayCv.draw(0, 0, 640, 960);
+		grayCv.draw(0, 0);
 	}
-	else {
-		grabber.draw(-40, 0, 720, 960);
-	}
+
+	grabber.draw(-40, 0, 720, 960);
 	
 	// grayCv.draw(0, 0);	
 	// grayCv.draw(0, 0, 640, 960);	
@@ -106,8 +109,8 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
 	// bring up gui
-	if( GuiViewController.view.hidden ){
-		GuiViewController.view.hidden = NO;
+	if( guiViewController.view.hidden ){
+		guiViewController.view.hidden = NO;
 	}
 }
 
@@ -136,11 +139,13 @@ void testApp::touchCancelled(ofTouchEventArgs& args){
 void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 	
 	IplImage* gray = sourceImg.getCvImage();	
-	cvSmooth( gray, gray, CV_GAUSSIAN, 5, 5 ); // smooth it, otherwise a lot of false circles may be detected
+	cout << "blurAmount: " << blurAmount << endl;
+	cvSmooth( gray, gray, CV_GAUSSIAN, blurAmount, blurAmount); // smooth it, otherwise a lot of false circles may be detected // put a slider on it?
 	CvMemStorage* storage = cvCreateMemStorage(0);	
-	circles = cvHoughCircles(gray, storage, CV_HOUGH_GRADIENT, 2, gray->width/8, 300, 200 );
+	//cout << "gray->width/8: " << gray->width/8 << endl; // 20
+	circles = cvHoughCircles(gray, storage, CV_HOUGH_GRADIENT, param1, param2, minRadius, maxRadius);
 	
-	
+	currentTrackedCircleCount = circles->total;
 	//cout << "Number of Circles: " << circles->total << endl;	
 	
 	// find positions of CV circles
@@ -241,5 +246,14 @@ void testApp::drawCircles(){
 	ofPopStyle();
 }
 
+void testApp::enableDebug() {
+	grayCv.setUseTexture(true);
+	debug = true;
+}
+
+void testApp::disableDebug() {
+	grayCv.setUseTexture(false);	
+	debug = false;	
+}
 
 
