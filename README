@@ -6,7 +6,8 @@ http://arthackday.net
 !!! Still in progress !!!
 
 Note core hack to get autofocus.
-Line 150 of AVFoundationVideoGrabber.MM
+Line ~139 of AVFoundationVideoGrabber.MM:
+if( [captureInput.device isFocusModeSupported:AVCaptureFocusModeAutoFocus] )	[captureInput.device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
 
 
 Parameter info:
@@ -29,3 +30,6 @@ Minimal radius of the circles to search for
 
 maxRadius:
 Maximal radius of the circles to search for. By default the maximal radius is set to max(image_width, image_height).
+
+Note:
+OneHolePunch will NOT run in the iPhone simulator.

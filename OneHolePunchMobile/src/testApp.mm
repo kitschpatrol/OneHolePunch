@@ -1,14 +1,12 @@
 #include "testApp.h"
-
 #include "GuiView.h"
 
 GuiView * guiViewController;
 
-//--------------------------------------------------------------
 void testApp::setup(){	
 	ofSetFrameRate(30);	
 	ofxiPhoneSetOrientation(OFXIPHONE_ORIENTATION_PORTRAIT);
-	ofSetVerticalSync(true);
+	ofSetVerticalSync(true); // Does this actually do anything?
 	ofRegisterTouchEvents(this);
 	ofxiPhoneAlerts.addListener(this);	
 	ofxAccelerometer.setup();
@@ -22,54 +20,58 @@ void testApp::setup(){
 
 	// this is screen aspect ratio-consistent crop from grabber
 	// there will be gutters!
-	
-	
+
 	// set up cv image, this is where we search for circles
 	cvImageScaleFactor = 2; // divide by this for CV, use power of two // do this as a param to CV instead?
 	cvScaledWidth = cvOriginalWidth / cvImageScaleFactor;
 	cvScaledHeight = cvOriginalHeight / cvImageScaleFactor;	
+	grayCv.allocate(cvScaledWidth, cvScaledHeight);
 	
 	cout << "cvScaledWidth: " << cvScaledWidth << endl;
 	cout << "cvScaledHeight: " << cvScaledHeight << endl;	
 	
-	grayCv.allocate(cvScaledWidth, cvScaledHeight);
-	
+
+	// Initialize Variables
 	CvSeq* circles = new CvSeq;
-	
 	circID = 0;
-	
-	// todo disable grayCv texture if not drawing?
 	debug = false;
-	
 	currentTrackedCircleCount = 0;
 	
-	// initial cv parameters
-	blurAmount = 3;
+	// Initial cv parameters (should match sliders)
+	blurAmount = 5;
 	hueRes = 1;
-	minDist = 30;
+	minDist = 35;
 	param1 = 2;
 	param2 = 20;
-	minRadius = 20;
+	minRadius = 40;
 	maxRadius = 300;	
 	
 	// Accelerometer Debug Arrow
 	arrow.loadImage("arrow.png");
 	arrow.setAnchorPercent(1.0, 0.5);	
 	
+	// Sounds
+	popSound.loadSound("sounds/synth.caf");	
+	popSound.setVolume(1);	
+	popSound.setMultiPlay(true);
+	
+	// GUI
 	guiViewController	= [[GuiView alloc] initWithNibName:@"GuiView" bundle:nil];
 	[ofxiPhoneGetUIWindow() addSubview:guiViewController.view];
-
 }
 
-//--------------------------------------------------------------
-void testApp::update(){
-	[guiViewController setFrameRateString: ofxStringToNSString(ofToString("FPS: " + ofToString(ofGetFrameRate(), 0)))];
-	[guiViewController setCircleCountString: ofxStringToNSString(ofToString("Circles: " + ofToString(currentTrackedCircleCount)))];	
 
+void testApp::update(){
+	// Update GUI status text
+	if (!guiViewController.view.hidden) {
+		[guiViewController setFrameRateString: ofxStringToNSString(ofToString("FPS: " + ofToString(ofGetFrameRate(), 0)))];
+		[guiViewController setCircleCountString: ofxStringToNSString(ofToString("Circles: " + ofToString(currentTrackedCircleCount)))];	
+	}
+
+	// Update camera
 	grabber.update();
 	
 	if (grabber.isFrameNew()) {
-		
 		// crop out the pixels we want from the grabber
 		// this is weird because aspect-correct workable size is 320 x 480
 		// but camera feed is 360 x 480
@@ -93,9 +95,11 @@ void testApp::update(){
 
 		houghCircles(grayCv);
 	}
+	
+	ofSoundUpdate();	
 }
 
-//--------------------------------------------------------------
+
 void testApp::draw(){	
 	ofBackground(255, 0, 0); // See any gaps easily
 	ofSetColor(255);
@@ -110,34 +114,13 @@ void testApp::draw(){
 	drawCircles();	
 }
 
-//--------------------------------------------------------------
+
 void testApp::touchDown(ofTouchEventArgs &touch){
-	// bring up gui
-	if( guiViewController.view.hidden ){
+	// bring up gui TODO do this on double tap instead
+	if (guiViewController.view.hidden ){
 		guiViewController.view.hidden = NO;
 	}
 }
-
-//--------------------------------------------------------------
-void testApp::touchMoved(ofTouchEventArgs &touch){
-
-}
-
-//--------------------------------------------------------------
-void testApp::touchUp(ofTouchEventArgs &touch){
-
-}
-
-//--------------------------------------------------------------
-void testApp::touchDoubleTap(ofTouchEventArgs &touch){
-
-}
-
-//--------------------------------------------------------------
-void testApp::touchCancelled(ofTouchEventArgs& args){
-
-}
-
 
 
 void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
@@ -153,9 +136,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 	//cout << "Number of Circles: " << circles->total << endl;	
 	
 	// find positions of CV circles
-	
-	for (int i = 0; i < circles->total; i++) 
-	{
+	for (int i = 0; i < circles->total; i++) {
 		float* p = (float*)cvGetSeqElem( circles, i );
 		ofPoint pos;
 		pos.x = cvPoint(cvRound(p[0]), cvRound(p[1])).x;  
@@ -166,15 +147,13 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		
 		bool cFound = false;
 		
-		for (int circs = 0; circs < myCircles.size(); circs++) 
-		{
+		for (int circs = 0; circs < myCircles.size(); circs++) {
 			ofPoint& posCirc = myCircles[circs].pos;
 			float dist = ofDistSquared(pos.x, pos.y, posCirc.x, posCirc.y);
 			//cout << "distance is: " << dist << endl;
 			
 			// check to see if there is a circle near an existing tracked circle
-			if ( dist < 1000 ) 
-			{
+			if ( dist < 1000 ) {
 				myCircles[circs].lastSeen = ofGetFrameNum();
 				myCircles[circs].radius = radius;
 				myCircles[circs].pos = pos;
@@ -183,8 +162,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			}
 		}
 		
-		if (!cFound) 
-		{
+		if (!cFound) {
 			CircleTrack c;
 			c.pos = pos;
 			c.radius = radius;
@@ -195,6 +173,8 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			c.iD = circID;
 			
 			if (c.radius) {
+				popSound.play();
+				
 				myCircles.push_back(c);
 				circID++;
 			}
@@ -209,8 +189,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			myCircles[x].setup();
 		}
 	}
-	
-	
+
 	vector<CircleTrack>::iterator iter = myCircles.begin();
 	while (iter != myCircles.end()) {
 		
@@ -224,8 +203,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			int	radiusT = iter->radius;
 			
 			iter = myCircles.erase(iter);
-			cout << "shape deleted at: "<< tracePos.x << ", " << tracePos.y << endl;
-			
+			// cout << "shape deleted at: "<< tracePos.x << ", " << tracePos.y << endl;
 			
 		} else {
 			
@@ -240,7 +218,6 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 }
 
 
-//--------------------------------------------------------------
 void testApp::drawCircles(){
 	ofPushStyle();
 	for (int i=0; i<myCircles.size(); i++) {
@@ -274,4 +251,25 @@ void testApp::drawAccelArrow() {
 	ofDisableAlphaBlending();
 }
 
+void testApp::exit() {
+	ofSoundStopAll();
+	ofSoundShutdown();
+}
 
+//--------------------------------------------------------------
+
+void testApp::touchMoved(ofTouchEventArgs &touch){
+	
+}
+
+void testApp::touchUp(ofTouchEventArgs &touch){
+	
+}
+
+void testApp::touchDoubleTap(ofTouchEventArgs &touch){
+	
+}
+
+void testApp::touchCancelled(ofTouchEventArgs& args){
+	
+}

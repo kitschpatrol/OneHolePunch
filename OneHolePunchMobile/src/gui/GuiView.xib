@@ -224,7 +224,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<float key="IBUIValue">25</float>
+						<float key="IBUIValue">40</float>
 						<float key="IBUIMinValue">1</float>
 						<float key="IBUIMaxValue">100</float>
 						<reference key="IBUIMinimumTrackTintColor" ref="661509156"/>
@@ -465,7 +465,6 @@
 						<string key="NSFrame">{{216, 441}, {94, 27}}</string>
 						<reference key="NSSuperview" ref="45263827"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:606</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
