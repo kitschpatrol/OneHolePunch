@@ -1,12 +1,20 @@
 #include "testApp.h"
 
-void testApp::setup(){
+void testApp::setup()
+{
 	ofSetFrameRate(60);
 	ofEnableAlphaBlending();
 	ofSetBackgroundAuto(true);
 	ofEnableSmoothing();
 	ofSetCircleResolution(30);
+    ofBackground(0, 0, 0);	
+
+    camWidth = 320;	// try to grab at this size. 
+	camHeight = 240;
 	
+    destHeight = 50;
+    destWidth = 50;
+    
 	// set up video
 	vidGrabber.setVerbose(true);
 	vidGrabber.initGrabber(320,240);
@@ -15,55 +23,49 @@ void testApp::setup(){
 	grayImage.allocate(320,240);
 	
 	CvSeq* circles = new CvSeq;
+    tex.allocate( destWidth,destHeight, GL_RGB );
 
 	circID = 0;
+    circCount = 0;
 }
 
 void testApp::update(){	
 	vidGrabber.grabFrame();
 	
 	if (vidGrabber.isFrameNew()) {
+        
+        ofPixels  videoTexture;
 		colorImg.setFromPixels(vidGrabber.getPixels(), 320,240);
 		grayImage = colorImg;
 		houghCircles(grayImage);	
+        pix = vidGrabber.getPixelsRef();
+        
+        for ( int i=0 ; i<punched.size(); i++) {
+            punched[i].update();
+        }
 	}
 }
 
 
-void testApp::draw(){
-	ofSetHexColor(0xffffff);
+void testApp::draw()
+{
+    ofSetHexColor(0xffffff);
 	grayImage.draw(0,0);
-
-	// draw circles
-	// cout << "total circles: " << circles->total << endl;
-
-	for (int i = 0; i < circles->total; i++) {
-		float* p = (float*)cvGetSeqElem( circles, i );
-		ofPoint pos;
-		pos.x = cvPoint(cvRound(p[0]),cvRound(p[1])).x;  
-		pos.y = cvPoint(cvRound(p[0]),cvRound(p[1])).y;
-		pos.x = (int)pos.x;
-		pos.y = (int)pos.y;
-		float radius = cvRound(p[2]);
-		
-		lerpPosX = ofLerp(lerpPosX, pos.x, 0.4);
-		lerpPosY = ofLerp(lerpPosY, pos.y, 0.4);
-		lerpRad = ofLerp(lerpRad, radius, 0.08);        
-		
-		ofSetColor( 255, 0, 0 );
-		ofPushMatrix();
-		ofTranslate(0, 0);
-		ofCircle( pos.x, pos.y, lerpRad );
-		ofPopMatrix();
-	}
 
 	// finally, a report:
 	ofSetHexColor(0xffffff);
 	char reportStr[1024];
-	sprintf(reportStr, "threshold %i (press: +/-)\nnum circs found %i, fps: %f", threshold, circles->total, ofGetFrameRate());
+	sprintf(reportStr, "threshold %i (press: +/-)\nnum circs found %i, fps: %f", threshold, circCount,ofGetFrameRate());
 	ofDrawBitmapString(reportStr, 20, 600);
 	drawCircles();
+    //tex.draw( 400,400,destWidth,destHeight);
+    
+    for ( int i=0 ; i<punched.size(); i++) {
+        punched[i].draw();
+    }
 }
+
+
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key)
@@ -80,7 +82,8 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 	cvSmooth( gray, gray, CV_GAUSSIAN, 5, 5 ); // smooth it, otherwise a lot of false circles may be detected
 	CvMemStorage* storage = cvCreateMemStorage(0);	
 	circles = cvHoughCircles(gray, storage, CV_HOUGH_GRADIENT, 2, gray->width/8, 300, 200 );
-	
+	circCount = circles->total;
+    
 	// find positions of CV circles
 	
 	for (int i = 0; i < circles->total; i++) 
@@ -114,7 +117,8 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		
 		if (!cFound) 
 		{
-			CircleTrack c;
+            radius *=1.05;
+			CircleTrack c = CircleTrack( pos );
 			c.pos = pos;
 			c.radius = radius;
 			c.lastSeen = ofGetFrameNum();
@@ -126,6 +130,18 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			if (c.radius) {
 				myCircles.push_back(c);
 				circID++;
+                
+                ofPixels pixCopy = pix;
+                pixCopy.crop( pos.x-radius, (pos.y-radius), radius*2 , radius*2 );
+                tex.loadData( pixCopy );
+                
+                ofTexture T;
+                T.allocate(radius*2,radius*2, GL_RGB);
+                T.loadData(pixCopy);
+                particle P = particle( pos,circID,radius,T  );
+                punched.push_back( P );
+                printf("punched %f,%f\n", pos.x,pos.y);
+                
 			}
 		}
 	}	
@@ -133,9 +149,10 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 	grayDiffTemp = gray;
 	cvReleaseMemStorage(&storage);
 	
-	for (int x = 0; x<myCircles.size(); x++) {
+	for ( int x = 0; x<myCircles.size(); x++ ) 
+    {
 		bool isSetupNow = myCircles[x].isSetUp;
-		if (!isSetupNow) {
+		if ( !isSetupNow ) {
 			myCircles[x].setup();
 		}
 	}
@@ -146,13 +163,13 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		
 		double life = iter->lastSeen;
 		int isAlive = iter->isAlive;
-		
-		if ((ofGetFrameNum()-life) > 30 ) {
+    
+        // kill old particles;
+        
+		if ( (ofGetFrameNum()-life) > 50 ) 
+        {
 			
-			int iD = iter->iD;
 			ofPoint tracePos = iter->pos;
-			int	radiusT = iter->radius;
-			
 			iter = myCircles.erase(iter);
 			cout << "shape deleted at: "<< tracePos.x << ", " << tracePos.y << endl;
 			
@@ -191,17 +208,14 @@ void testApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
-	panel.mouseDragged(x,y,button);
 }
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-	panel.mousePressed(x,y,button);
 }
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){
-	panel.mouseReleased();
 }
 
 //--------------------------------------------------------------

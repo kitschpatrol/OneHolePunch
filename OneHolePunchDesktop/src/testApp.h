@@ -1,12 +1,11 @@
 #pragma once
 
 #include "ofMain.h"
-
 #include "ofxOpenCv.h"
 #include "cv.h"
 #include <math.h>
 #include "circleTrack.h"
-#include "ofxControlPanel.h"
+#include "particle.h"
 
 
 
@@ -42,6 +41,7 @@ class testApp : public ofBaseApp{
 		#endif
 
         ofxCvColorImage			colorImg;
+        ofxCvColorImage			colorRoiImg;
 
         ofxCvGrayscaleImage 	grayImage;
 		ofxCvGrayscaleImage 	grayBg;
@@ -49,17 +49,33 @@ class testApp : public ofBaseApp{
         ofxCvGrayscaleImage 	grayDiffTemp;		// for median filtering....
 
         ofxCvContourFinder 	contourFinder;
+    
+        ofTexture           tex;
+        ofPixels            pix;
 
 		int 				threshold;
+        int                 circCount;
 		bool				bLearnBakground;
 
+        
+        int 				camWidth;
+        int 				camHeight;
+        int                 destHeight;
+        int                 destWidth;
+        
     
         /////////// circles ////////
         
         void houghCircles( ofxCvGrayscaleImage sourceImg );		/// calculate circle detection
         void drawCircles();
+        
+        ofxCvRoiMode mode;
+    
     
         vector <CircleTrack> myCircles;
+        vector <ofTexture> myTextures;
+        vector <particle> punched;
+
         CvMemStorage* storage;
         CvSeq* circles;
         IplImage* gray; 
@@ -72,11 +88,6 @@ class testApp : public ofBaseApp{
         float lerpPosX;
         float lerpPosY;    
         float lerpRad;
-    
-    
-        /////////// control panel and centroid/bbox /////////////////
-        
-        ofxControlPanel		panel;	
 
 };
 
