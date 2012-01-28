@@ -10,6 +10,8 @@ void testApp::setup(){
 	ofxiPhoneSetOrientation(OFXIPHONE_ORIENTATION_PORTRAIT);
 	ofSetVerticalSync(true);
 	ofRegisterTouchEvents(this);
+	ofxiPhoneAlerts.addListener(this);	
+	ofxAccelerometer.setup();
 	
 	cout << "OF Width: " << ofGetWidth() << endl;
 	cout << "OF Height: " << ofGetHeight() << endl;	
@@ -42,7 +44,7 @@ void testApp::setup(){
 	currentTrackedCircleCount = 0;
 	
 	// initial cv parameters
-	blurAmount = 5;
+	blurAmount = 3;
 	hueRes = 1;
 	minDist = 30;
 	param1 = 2;
@@ -50,8 +52,13 @@ void testApp::setup(){
 	minRadius = 20;
 	maxRadius = 300;	
 	
+	// Accelerometer Debug Arrow
+	arrow.loadImage("arrow.png");
+	arrow.setAnchorPercent(1.0, 0.5);	
+	
 	guiViewController	= [[GuiView alloc] initWithNibName:@"GuiView" bundle:nil];
 	[ofxiPhoneGetUIWindow() addSubview:guiViewController.view];
+
 }
 
 //--------------------------------------------------------------
@@ -93,16 +100,13 @@ void testApp::draw(){
 	ofBackground(255, 0, 0); // See any gaps easily
 	ofSetColor(255);
 	
+	grabber.draw(-40, 0, 720, 960);	
+	
 	if (debug) {
-		//grayCv.draw(0, 0, 640, 960);
 		grayCv.draw(0, 0);
+		drawAccelArrow();		
 	}
 
-	grabber.draw(-40, 0, 720, 960);
-	
-	// grayCv.draw(0, 0);	
-	// grayCv.draw(0, 0, 640, 960);	
-	
 	drawCircles();	
 }
 
@@ -139,7 +143,7 @@ void testApp::touchCancelled(ofTouchEventArgs& args){
 void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 	
 	IplImage* gray = sourceImg.getCvImage();	
-	cout << "blurAmount: " << blurAmount << endl;
+	//cout << "blurAmount: " << blurAmount << endl;
 	cvSmooth( gray, gray, CV_GAUSSIAN, blurAmount, blurAmount); // smooth it, otherwise a lot of false circles may be detected // put a slider on it?
 	CvMemStorage* storage = cvCreateMemStorage(0);	
 	//cout << "gray->width/8: " << gray->width/8 << endl; // 20
@@ -254,6 +258,20 @@ void testApp::enableDebug() {
 void testApp::disableDebug() {
 	grayCv.setUseTexture(false);	
 	debug = false;	
+}
+
+void testApp::drawAccelArrow() {
+	float angle = 180 - RAD_TO_DEG * atan2( ofxAccelerometer.getForce().y, ofxAccelerometer.getForce().x );
+	
+	ofEnableAlphaBlending();
+	ofSetColor(255);
+	ofPushMatrix();
+	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, 0);
+	ofScale(3, 3);	
+	ofRotateZ(angle);
+	arrow.draw(0,0);
+	ofPopMatrix();	
+	ofDisableAlphaBlending();
 }
 
 

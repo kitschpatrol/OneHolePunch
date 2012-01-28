@@ -61,6 +61,8 @@ class testApp : public ofxiPhoneApp{
 	void houghCircles(ofxCvGrayscaleImage sourceImg );		/// calculate circle detection
 	void drawCircles();
 	
+	void drawAccelArrow();
+	
 	vector <CircleTrack> myCircles;
 	CvMemStorage* storage;
 	CvSeq* circles;
@@ -81,7 +83,11 @@ class testApp : public ofxiPhoneApp{
 	int minRadius;
 	int maxRadius;
 	float lerpRad;
-	float lerpPos;	
+	float lerpPos;
+	
+	// Debug helpers
+	ofImage arrow;
+	
 	
 		
 };
