@@ -9,6 +9,8 @@
 //ON IPHONE NOTE INCLUDE THIS BEFORE ANYTHING ELSE
 #include "ofxOpenCv.h"
 
+#include "circleTrack.h"
+
 class testApp : public ofxiPhoneApp{
 	
 	public:
@@ -23,18 +25,63 @@ class testApp : public ofxiPhoneApp{
 		void touchDoubleTap(ofTouchEventArgs &touch);
 		void touchCancelled(ofTouchEventArgs &touch);
 
-		ofImage img;
-				
+	
+		void enableDebug();
+		void disableDebug();
+
 		ofVideoGrabber grabber;
-		ofTexture tex;
-		unsigned char * pix;
 		
 		ofxCvColorImage colorCv;
-		ofxCvColorImage colorCvSmall;
-		ofxCvGrayscaleImage grayCv;
-		ofxCvHaarFinder finder;
+	//		ofxCvColorImage colorCvSmall;
 		
-		ofImage colorImg;
+	
+	
+	ofxCvGrayscaleImage grayCv;
+
+	
+	static const int cameraWidth = 360;
+	static const int cameraHeight = 480;	
+	static const int cvOriginalWidth = 320;
+	static const int cvOriginalHeight = 480;
+	
+	float cvImageScaleFactor;	
+	int cvScaledWidth;
+	int cvScaledHeight;
+	
+	// GUI
+	bool debug;
+	
+	
+	ofImage colorView;
+
+	
+	
+	/////////// circles ////////
+	int currentTrackedCircleCount;
+	void houghCircles(ofxCvGrayscaleImage sourceImg );		/// calculate circle detection
+	void drawCircles();
+	
+	vector <CircleTrack> myCircles;
+	CvMemStorage* storage;
+	CvSeq* circles;
+	IplImage* gray; 
+	int circID;
+	ofPoint previousPos;
+	float previousRadius;
+	
+	string fNameSaved;
+	
+	
+	// GUI parameters
+	int blurAmount;
+	double hueRes;
+	double minDist;
+	double param1;
+	double param2;
+	int minRadius;
+	int maxRadius;
+	float lerpRad;
+	float lerpPos;	
+	
 		
-		vector <ofxCvBlob> faces;
 };
