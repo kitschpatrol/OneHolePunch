@@ -156,7 +156,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		// transform to camera world
 		pos.x = (int)cvPoint(cvRound(p[0]),cvRound(p[1])).x; // (int)ofMap(cvPoint(cvRound(p[0]),cvRound(p[1])).x, 0, cvScaledWidth, 0, cameraWidth - 80) + 40;  
 		pos.y = (int)cvPoint(cvRound(p[0]),cvRound(p[1])).y; //(int)ofMap(cvPoint(cvRound(p[0]),cvRound(p[1])).y, 0, cvScaledHeight, 0, cameraHeight);
-		int radius = (int)cvRound(p[2]); //(int)ofMap(cvRound(p[2]), 0, cvScaledHeight, 0, cameraHeight);
+		float radius = cvRound(p[2]); //(int)ofMap(cvRound(p[2]), 0, cvScaledHeight, 0, cameraHeight);
 		
 		bool cFound = false;
 		
@@ -176,7 +176,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		}
 		
 		if (!cFound) {
-			radius *= 1.05;
+			radius *= 1.1; // Grow 10%
 			CircleTrack c = CircleTrack(pos);
 			c.pos = pos;
 			c.radius = radius;
