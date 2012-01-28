@@ -1,4 +1,31 @@
 An iPhone app that punches circles out of the environment and collects them in your pocket; eventually outputting them to a 2D printer.
 
+Created by Eric Mika and Tamar Zif at Art Hack Day
+http://arthackday.net
+
+!!! Still in progress !!!
+
 Note core hack to get autofocus.
 Line 150 of AVFoundationVideoGrabber.MM
+
+
+Parameter info:
+
+hueRes:
+Resolution of the accumulator used to detect centers of the circles. 
+For example, if it is 1, the accumulator will have the same resolution as the input image, if it is 2 - accumulator will have twice smaller width and height, etc
+ 
+minDist:
+Minimum distance between centers of the detected circles. If the parameter is too small, multiple neighbor circles may be falsely detected in addition to a true one. If it is too large, some circles may be missed
+
+param1:
+The first method-specific parameter. In case of CV_HOUGH_GRADIENT it is the higher threshold of the two passed to Canny edge detector (the lower one will be twice smaller).
+
+param2:
+The second method-specific parameter. In case of CV_HOUGH_GRADIENT it is accumulator threshold at the center detection stage. The smaller it is, the more false circles may be detected. Circles, corresponding to the larger accumulator values, will be returned first
+
+minRadius:
+Minimal radius of the circles to search for
+
+maxRadius:
+Maximal radius of the circles to search for. By default the maximal radius is set to max(image_width, image_height).

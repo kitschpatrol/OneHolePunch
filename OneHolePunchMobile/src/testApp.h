@@ -66,5 +66,17 @@ class testApp : public ofxiPhoneApp{
 	float previousRadius;
 	
 	string fNameSaved;
+	
+	
+	// GUI parameters
+	double hueRes;
+	double minDist;
+	double param1;
+	double param2;
+	int minRadius;
+	int maxRadius;
+	float lerpRad;
+	float lerpPos;	
+	
 		
 };

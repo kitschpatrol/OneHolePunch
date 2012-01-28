@@ -1,11 +1,16 @@
 #include "testApp.h"
 
+#include "GuiView.h"
+
+GuiView * GuiViewController;
+
 //--------------------------------------------------------------
 void testApp::setup(){	
 	ofSetFrameRate(30);	
 	ofxiPhoneSetOrientation(OFXIPHONE_ORIENTATION_PORTRAIT);
 	ofSetVerticalSync(true);
-
+	ofRegisterTouchEvents(this);
+	
 	cout << "OF Width: " << ofGetWidth() << endl;
 	cout << "OF Height: " << ofGetHeight() << endl;	
 	
@@ -33,6 +38,17 @@ void testApp::setup(){
 	
 	// todo disable grayCv texture if not drawing?
 	drawDebug = false;
+	
+	// initial cv parameters
+	hueRes = 2; 
+	minDist = 40;
+	param1 = 100;
+	param2 = 100;
+	minRadius = 0;
+	maxRadius = 0;	
+	
+	GuiViewController	= [[GuiView alloc] initWithNibName:@"GuiView" bundle:nil];
+	[ofxiPhoneGetUIWindow() addSubview:GuiViewController.view];	
 }
 
 //--------------------------------------------------------------
@@ -89,7 +105,10 @@ void testApp::draw(){
 
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
-
+	// bring up gui
+	if( GuiViewController.view.hidden ){
+		GuiViewController.view.hidden = NO;
+	}
 }
 
 //--------------------------------------------------------------
