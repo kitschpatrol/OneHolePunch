@@ -47,12 +47,12 @@ void testApp::setup(){
 	minRadius = 40;
 	maxRadius = 300;	
 	
-	// Initialize Particles
-//	particle::bounceFactor = 0.7;
-//	particle::accelerometerForce = 0.2;	
+	minCircleRadius = 10;
+	maxCircleRadius = 50;
 	
-	// Circle tracking
-	tex.allocate(ofGetWidth(), ofGetHeight(), GL_RGB );	
+	// Initialize Particles
+	particle::bounceFactor = 0.2;
+	particle::accelerometerForce = 0.8;	
 	
 	// Accelerometer Debug Arrow
 	arrow.loadImage("arrow.png");
@@ -102,11 +102,12 @@ void testApp::update(){
 		grayCv.setFromPixels(grayPixels, cvScaledWidth, cvScaledHeight);
 
 		houghCircles(grayCv);
+		
+		pix = grabber.getPixelsRef(); // do this here instead of draw?
 	}
 	
 	for (int i = 0; i < punched.size(); i++) {
 		punched[i].update(ofxAccelerometer.getForce().x, ofxAccelerometer.getForce().y);
-		//punched[i].mouse = ofVec3f(mouseX, mouseY, 0);
 	}
 	
 	ofSoundUpdate();	
@@ -179,10 +180,9 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			}
 		}
 		
-		if (!cFound) 
-		{
-			radius *=1.05;
-			CircleTrack c = CircleTrack( pos );
+		if (!cFound) {
+			radius *= 1.05;
+			CircleTrack c = CircleTrack(pos);
 			c.pos = pos;
 			c.radius = radius;
 			c.lastSeen = ofGetFrameNum();
@@ -191,23 +191,32 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			c.isSetUp = false;
 			c.iD = circID;
 			
-			if (c.radius) {
+			if (c.radius > 0) {
 				myCircles.push_back(c);
 				circID++;
+					
+				ofPixels pixCopy = pix;	
+				pixCopy.crop(pos.x - radius, (pos.y - radius), radius * 2 , radius * 2);
+					
+				ofTexture circleTexture;
+				circleTexture.allocate(radius * 2,radius * 2, GL_RGB);
+				circleTexture.loadData(pixCopy);
 				
-				pix = grabber.getPixelsRef(); // do this here instead of draw?
+				particle circleParticle = particle(pos, circID, radius, circleTexture);
+				punched.push_back(circleParticle);
+
+				// Play the sound. Bigger circles have lower pitch.
+				minCircleRadius = min((float)radius, minCircleRadius);
+				maxCircleRadius = max((float)radius, maxCircleRadius);
+				float playSpeed = ofMap(radius, minCircleRadius, maxCircleRadius, 3, 0.5);
 				
-				ofPixels pixCopy = pix;
-				pixCopy.crop( pos.x-radius, (pos.y-radius), radius*2 , radius*2 );
-				tex.loadData( pixCopy );
+				// Shake the phone.
+				vibrate();
+
+				popSound.setSpeed(playSpeed); // TODO tweak this range
+				popSound.play();
 				
-				ofTexture T;
-				T.allocate(radius*2,radius*2, GL_RGB);
-				T.loadData(pixCopy);
-				particle P = particle( pos,circID,radius,T  );
-				punched.push_back( P );
-				printf("punched %f,%f\n", pos.x,pos.y);
-				
+				printf("punched %f,%f with radius %f (min: %f and max: %f) and playback speed %f\n", pos.x,pos.y, (float)radius, minCircleRadius, maxCircleRadius, playSpeed);																	
 			}
 		}
 	}	

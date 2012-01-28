@@ -36,7 +36,6 @@ class testApp : public ofxiPhoneApp{
 		int maxRadius;
 	
 		// Circle Extraction
-		ofTexture tex;
 		ofPixels  pix;	
 		vector <particle> punched;	
 
@@ -73,6 +72,10 @@ class testApp : public ofxiPhoneApp{
 	
 		// Sound
 		ofSoundPlayer  popSound;
+		float minCircleRadius;
+		float maxCircleRadius;
+	
+	
 	
 
 };
