@@ -65,6 +65,12 @@ void testApp::setup(){
 	
 	circleMask.loadImage("images/circleMask.png");
 	
+	// Tracker (for persistent holes)
+	if (useTracker) {
+		tracker.setPosition( ofPoint(0,0,0) );
+		tracker.setScale(.2);	// Scale down the image to improve performance
+	}
+	
 	// GUI
 	guiViewController	= [[GuiView alloc] initWithNibName:@"GuiView" bundle:nil];
 	[ofxiPhoneGetUIWindow() addSubview:guiViewController.view];
@@ -101,12 +107,21 @@ void testApp::update(){
 		
 		grayCv.setFromPixels(grayPixels, cvScaledWidth, cvScaledHeight);
 
+		
+
 		houghCircles(grayCv);
+		
+		// tracker
+		if (useTracker) {
+			tracker.update(grabber.getPixels(), grabber.getWidth(), grabber.getHeight());
+		}
 	}
 	
 	for (int i = 0; i < punched.size(); i++) {
 		punched[i].update(ofxAccelerometer.getForce().x, ofxAccelerometer.getForce().y);
 	}
+	
+	
 	
 	ofSoundUpdate();	
 }
@@ -127,7 +142,20 @@ void testApp::draw(){
 	
 	for (int i = 0; i < punched.size(); i++) {
 		punched[i].draw();
+	}
+	
+	if (useTracker && tracker.isTracking()) {
+		// Draw back projection image
+		ofSetColor(0, 0, 0);
+		//ofDrawBitmapString("Back projection", ofPoint( vidGrabber.getWidth()+20,10) );
+		//ofSetColor(255,255,255);
+		//camShift.drawBackProjection( vidGrabber.getWidth()+20, 0);
+		
+		// Draw tracked object
+		cout << "tracking" << endl;
+		tracker.drawTrackObj();
 	}	
+	
 }
 
 
@@ -176,15 +204,20 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		}
 		
 		if (!cFound) {
-			radius *= 1.1; // Grow 10%
+			radius *= 1.2; // Grow 10%
 			CircleTrack c = CircleTrack(pos);
 			c.pos = pos;
+			
+//			c.pos.x = ofMap(c.pos.x, 0, cameraWidth, 0, ofGetWidth());
+//			c.pos.y = ofMap(c.pos.y, 0, cameraHeight, 0, ofGetWidth());
+			
 			c.radius = radius;
 			c.lastSeen = ofGetFrameNum();
 			c.isAlive = 0;
 			c.drawMe = false;
 			c.isSetUp = false;
 			c.iD = circID;
+
 			
 			if (c.radius > 0) {
 				myCircles.push_back(c);
@@ -196,6 +229,13 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 				int cropWidth = ofMap(radius * 2, 0, cvScaledWidth, 0, cameraWidth - 40); // shrink camera
 				int cropHeight = ofMap(radius * 2, 0, cvScaledHeight, 0, cameraHeight);
 				
+				
+				/////// cam shift ////////
+				if (useTracker) {
+					tracker.onStartSelect(cropX, cropY);
+					tracker.onSelectUpdate(cropX + cropWidth, cropY + cropHeight);
+					tracker.track(grabber.getPixels(), cameraWidth, cameraHeight);
+				}
 				
 				cout << "Cropx: " << cropX << endl;
 				cout << "Cropy: " << cropY << endl;
@@ -234,6 +274,10 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 				circleImage.setFromPixels(circlePixels, cropWidth, cropHeight, OF_IMAGE_COLOR_ALPHA);
 				
 				particle circleParticle = particle(pos, circID, radius, circleImage);
+				circleParticle.pos.x = ofMap(c.pos.x, 0, cvScaledWidth, 0, ofGetWidth());
+				circleParticle.pos.y = ofMap(c.pos.y, 0, cvScaledHeight, 0, ofGetHeight());	
+				circleParticle.size = ofMap(radius, 0, cvScaledHeight, 0, ofGetHeight()) * 2;	
+				circleParticle.iniSize = circleParticle.size;
 				punched.push_back(circleParticle);
 
 				// Play the sound... Bigger circles have lower pitch
@@ -270,13 +314,10 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		int isAlive = iter->isAlive;
     
 		// kill old particles;
-		if ( (ofGetFrameNum()-life) > 15) {
-			
+		if ( (ofGetFrameNum() - life) > 15) {
 			ofPoint tracePos = iter->pos;
 			iter = myCircles.erase(iter);
 			cout << "shape deleted at: "<< tracePos.x << ", " << tracePos.y << endl;
-			
-			
 		} else {
 			
 			if (iter->isAlive > 0) // used to be 3? 

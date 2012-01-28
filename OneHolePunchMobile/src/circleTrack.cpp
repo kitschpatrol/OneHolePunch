@@ -16,9 +16,9 @@ void CircleTrack::setup () {
 
 
 void CircleTrack::draw () {    
-	lerpPosX = ofLerp(lerpPosX, pos.x, 0.1);
-	lerpPosY = ofLerp(lerpPosY, pos.y, 0.1);
-	lerpRad = ofLerp(lerpRad, radius, 0.08);
+	lerpPosX = ofLerp(lerpPosX, pos.x, 0.8);
+	lerpPosY = ofLerp(lerpPosY, pos.y, 0.8);
+	lerpRad = ofLerp(lerpRad, radius, 0.9);
       
 	if (drawMe) {
 		ofPushMatrix();

@@ -6,6 +6,7 @@
 #include "ofxiPhoneExtras.h"
 #include "circleTrack.h"
 #include "particle.h"
+#include "ofxCamshift.h"
 
 class testApp : public ofxiPhoneApp{
 	
@@ -38,6 +39,8 @@ class testApp : public ofxiPhoneApp{
 		// Circle Extraction
 		vector <particle> punched;	
 
+
+	
 	private:
 		// Camera
 		ofVideoGrabber grabber;	
@@ -75,6 +78,7 @@ class testApp : public ofxiPhoneApp{
 		float maxCircleRadius;
 	
 	
-	
-
+		// Tracker // TOO SLOW FOR NOW!
+		const bool useTracker = false;
+		ofxCamshift tracker;	
 };

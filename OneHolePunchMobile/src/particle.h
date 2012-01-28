@@ -20,6 +20,11 @@ class particle {
 		int damping;
 		float size;
 		float iniSize;
+
+	
+	float rotation;
+	float rotationVelocity;
+	float rotationAcceleration;
     
     ofImage circleImage;
     ofImage myMask;

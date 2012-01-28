@@ -23,4 +23,6 @@ class CircleTrack {
 		float lerpPosX;
 		float lerpPosY;    
 		float lerpRad;
+	
+		int alpha;
 };

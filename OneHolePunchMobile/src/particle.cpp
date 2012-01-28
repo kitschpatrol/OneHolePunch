@@ -9,6 +9,10 @@ particle::particle( ofVec3f _pos, int _id, float _size, ofImage _circleImage) {
 	pId = _id;
 	size = _size;
 	
+	rotation = 0;
+
+	
+	cout << "INI size: " << size << endl;
 	vel = ofVec3f(0,0,0);
 	acc = ofVec3f(0,0,0);
 }
@@ -17,6 +21,12 @@ particle::particle( ofVec3f _pos, int _id, float _size, ofImage _circleImage) {
 void particle::update(float accelX, float accelY) {	
 	vel.x += particle::accelerometerForce * accelX * ofRandomuf();
 	vel.y += -particle::accelerometerForce * accelY * ofRandomuf();
+	
+	//float accelR = 1;
+	
+	rotationVelocity = (vel.x); //particle::accelerometerForce * accelR * ofRandomuf();
+	
+	rotation += rotationVelocity;
 	
 	// add vel to pos
 	pos += vel;
@@ -38,14 +48,16 @@ void particle::update(float accelX, float accelY) {
 		vel.y *= -particle::bounceFactor; 
 	}
 	
-	size *= 0.95;
-	size = ofClamp(size, 20, 1000);
+	size *= 0.98;
+	size = ofClamp(size, iniSize * 0.5, 1000);
 }
 
 
 void particle::draw() {
 	ofPushMatrix();
-	ofTranslate(pos.x - size / 2, pos.y - size / 2, 0);
-	circleImage.draw(0, 0);
+	//ofTranslate(-size / 2, -size / 2, 0);
+	ofTranslate(pos.x, pos.y);
+	ofRotate(rotation);	
+	circleImage.draw(-size / 2, -size / 2, size, size);
 	ofPopMatrix();
 }
