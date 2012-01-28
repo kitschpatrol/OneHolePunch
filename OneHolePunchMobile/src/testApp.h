@@ -22,6 +22,15 @@ class testApp : public ofxiPhoneApp{
 
 		void enableDebug();
 		void disableDebug();
+	
+		// GUI parameters
+		int blurAmount;
+		double hueRes;
+		double minDist;
+		double param1;
+		double param2;
+		int minRadius;
+		int maxRadius;	
 
 	private:
 		// Camera
@@ -51,15 +60,6 @@ class testApp : public ofxiPhoneApp{
 		bool debug;
 		void drawAccelArrow();
 		ofImage arrow;
-	
-		// GUI parameters
-		int blurAmount;
-		double hueRes;
-		double minDist;
-		double param1;
-		double param2;
-		int minRadius;
-		int maxRadius;
 	
 		// Sound
 		ofSoundPlayer  popSound;

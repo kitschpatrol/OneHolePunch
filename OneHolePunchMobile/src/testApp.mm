@@ -34,7 +34,7 @@ void testApp::setup(){
 	// Initialize Variables
 	CvSeq* circles = new CvSeq;
 	circID = 0;
-	debug = false;
+	debug = false;	
 	currentTrackedCircleCount = 0;
 	
 	// Initial cv parameters (should match sliders)
@@ -51,7 +51,7 @@ void testApp::setup(){
 	arrow.setAnchorPercent(1.0, 0.5);	
 	
 	// Sounds
-	popSound.loadSound("sounds/synth.caf");	
+	popSound.loadSound("sounds/punched.wav");	
 	popSound.setVolume(1);	
 	popSound.setMultiPlay(true);
 	
