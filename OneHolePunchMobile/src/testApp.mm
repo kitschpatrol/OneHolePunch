@@ -130,11 +130,11 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 	{
 		float* p = (float*)cvGetSeqElem( circles, i );
 		ofPoint pos;
-		pos.x = cvPoint( cvRound(p[0]),cvRound(p[1]) ).x;  
-		pos.y = cvPoint( cvRound(p[0]),cvRound(p[1]) ).y;
-		pos.x = (int)ofMap(pos.x, 0, 320, 0, ofGetWidth()); // TODO variables here
-		pos.y = (int)ofMap(pos.y, 0, 480, 0, ofGetHeight()); // TODO variables here
-		int radius = cvRound( p[2] );
+		pos.x = cvPoint(cvRound(p[0]), cvRound(p[1])).x;  
+		pos.y = cvPoint(cvRound(p[0]), cvRound(p[1])).y;
+		pos.x = (int)ofMap(pos.x, 0, cvScaledWidth, 0, ofGetWidth()); // TODO variables here
+		pos.y = (int)ofMap(pos.y, 0, cvScaledHeight, 0, ofGetHeight()); // TODO variables here
+		int radius = ofMap(cvRound(p[2]), 0, cvScaledHeight, 0, ofGetHeight());
 		
 		bool cFound = false;
 		
