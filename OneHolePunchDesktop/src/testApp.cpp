@@ -34,20 +34,24 @@ void testApp::update(){
 	
 	if (vidGrabber.isFrameNew()) {
         
-        ofPixels  videoTexture;
+        ofPixels videoTexture;
 		colorImg.setFromPixels(vidGrabber.getPixels(), 320,240);
-		grayImage = colorImg;
-		houghCircles(grayImage);	
+		//grayImage = colorImg;
+		
+        colorImg.convertToGrayscalePlanarImage( grayImage, 1 );
+        
+        houghCircles(grayImage);	
         pix = vidGrabber.getPixelsRef();
         
-        for ( int i=0 ; i<punched.size(); i++) {
+        for ( int i=0 ; i<punched.size(); i++) 
+        {
             punched[i].update();
-            punched[i].goToTarget( ofVec3f( mouseX,mouseY,0), 100);
-            
-            for ( int j=0 ; j<punched.size(); j++) 
-            {
-                if ( j != i ) punched[i].runFromTarget( punched[j].pos,1 );
-            }
+            punched[i].mouse = ofVec3f( mouseX,mouseY,0 );
+//            
+//            for ( int j=0 ; j<punched.size(); j++) 
+//            {
+//                if ( j != i ) punched[i].runFromTarget( punched[j].pos,1 );
+//            }
         }
 	}
 }
@@ -152,7 +156,6 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		}
 	}	
 	
-	grayDiffTemp = gray;
 	cvReleaseMemStorage(&storage);
 	
 	for ( int x = 0; x<myCircles.size(); x++ ) 
@@ -182,9 +185,11 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			
 		} else {
 			
-			if (iter->isAlive > 3) {
+			if (iter->isAlive > 3) 
+            {
 				iter->drawMe = true;
-			} else {
+			} else 
+            {
 				iter->drawMe = false;
 			}
 			iter++;
