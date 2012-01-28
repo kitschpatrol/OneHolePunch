@@ -1,19 +1,16 @@
 #include "particle.h"
 
-float particle::bounceFactor = 0.7;
-float particle::accelerometerForce = 0.2;	
+float particle::bounceFactor = 0.2;
+float particle::accelerometerForce = 0.8;	
 
-particle::particle( ofVec3f _pos, int _id, float _size, ofTexture _tex ) {
-	texture = _tex;
+particle::particle( ofVec3f _pos, int _id, float _size, ofImage _circleImage) {
+	circleImage = _circleImage;
 	pos = _pos;								// get birth place from pixels
 	pId = _id;
 	size = _size;
 	
 	vel = ofVec3f(0,0,0);
 	acc = ofVec3f(0,0,0);
-
-	myMask.loadImage("images/mask.tif"); // Y U NO in subfolder?
-	myMask.resize(size*2,size*2);
 }
 
 
@@ -49,23 +46,6 @@ void particle::update(float accelX, float accelY) {
 void particle::draw() {
 	ofPushMatrix();
 	ofTranslate(pos.x - size / 2, pos.y - size / 2, 0);
-	ofPushStyle();
-	
-	// draw the mask        
-	glEnable(GL_BLEND);  
-	glColorMask(false, false, false, true);  
-	glBlendFunc(GL_SRC_ALPHA, GL_ZERO);  
-	glColor4f(0, 0, 0, 1.0); 
-	myMask.resize(size * 2, size * 2);
-	myMask.draw(0, 0, 0);
-	
-	
-	// draw the images
-	glColorMask(true,true,true,true);  
-	glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA);  
-	glColor4f(1,1,1,0.8f);  
-	texture.draw(0,0,size*2,size*2);
-	
-	ofPopStyle();
+	circleImage.draw(0, 0);
 	ofPopMatrix();
 }

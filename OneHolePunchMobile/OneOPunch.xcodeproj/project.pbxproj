@@ -16,7 +16,7 @@
 		251BC70314D3E746006B20C8 /* punched.wav in Resources */ = {isa = PBXBuildFile; fileRef = 251BC70214D3E746006B20C8 /* punched.wav */; };
 		251BC71114D45AC6006B20C8 /* particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 251BC70D14D45AC6006B20C8 /* particle.cpp */; };
 		251BC71214D45AC6006B20C8 /* circleTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 251BC71014D45AC6006B20C8 /* circleTrack.cpp */; };
-		25660BE014D46533000EA460 /* mask.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25660BDF14D46533000EA460 /* mask.tif */; };
+		25660BF014D48776000EA460 /* circleMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 25660BEF14D48776000EA460 /* circleMask.png */; };
 		25974D4A14D28F5C0047A058 /* opencv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25974D4914D28F5C0047A058 /* opencv.a */; };
 		259da76c028adaa20996723e102a6ccd /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ce9c7160245b19131dae61282ee6cb53 /* ofxCvColorImage.cpp */; };
 		25EFB38C14D3E17B007CC58F /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 25EFB38714D3E17B007CC58F /* arrow.png */; };
@@ -74,7 +74,7 @@
 		251BC70E14D45AC6006B20C8 /* particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = particle.h; sourceTree = "<group>"; };
 		251BC70F14D45AC6006B20C8 /* circleTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = circleTrack.h; sourceTree = "<group>"; };
 		251BC71014D45AC6006B20C8 /* circleTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = circleTrack.cpp; sourceTree = "<group>"; };
-		25660BDF14D46533000EA460 /* mask.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = mask.tif; sourceTree = "<group>"; };
+		25660BEF14D48776000EA460 /* circleMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circleMask.png; sourceTree = "<group>"; };
 		25974D4914D28F5C0047A058 /* opencv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = opencv.a; path = ../../../addons/ofxOpenCv/libs/opencv/lib/iphone/opencv.a; sourceTree = "<group>"; };
 		25EFB38714D3E17B007CC58F /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		25EFB38814D3E17B007CC58F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -174,7 +174,7 @@
 		25EFB38614D3E17B007CC58F /* images */ = {
 			isa = PBXGroup;
 			children = (
-				25660BDF14D46533000EA460 /* mask.tif */,
+				25660BEF14D48776000EA460 /* circleMask.png */,
 				25EFB38714D3E17B007CC58F /* arrow.png */,
 				25EFB38814D3E17B007CC58F /* Default.png */,
 				25EFB38914D3E17B007CC58F /* Default@2x.png */,
@@ -407,7 +407,7 @@
 				25EFB39014D3E17B007CC58F /* OneHolePunchIcon4.png in Resources */,
 				25EFB39314D3E4B1007CC58F /* punched.caf in Resources */,
 				251BC70314D3E746006B20C8 /* punched.wav in Resources */,
-				25660BE014D46533000EA460 /* mask.tif in Resources */,
+				25660BF014D48776000EA460 /* circleMask.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

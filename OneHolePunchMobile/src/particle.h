@@ -4,7 +4,7 @@
 
 class particle {
 	public:
-		particle(ofVec3f _pos, int _id, float _size, ofTexture _tex);
+		particle(ofVec3f _pos, int _id, float _size, ofImage _circleImage);
 
     ofVec3f posAttract;
 		ofVec3f posRepel;
@@ -21,7 +21,7 @@ class particle {
 		float size;
 		float iniSize;
     
-    ofTexture texture;
+    ofImage circleImage;
     ofImage myMask;
 	
 		void update(float accelX, float accelY);

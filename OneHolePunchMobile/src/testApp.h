@@ -36,7 +36,6 @@ class testApp : public ofxiPhoneApp{
 		int maxRadius;
 	
 		// Circle Extraction
-		ofPixels  pix;	
 		vector <particle> punched;	
 
 	private:
@@ -62,7 +61,7 @@ class testApp : public ofxiPhoneApp{
 		CvSeq* circles;
 		IplImage* gray; 
 		int circID;
-		
+		ofImage circleMask;
 
 	
 		// Debug

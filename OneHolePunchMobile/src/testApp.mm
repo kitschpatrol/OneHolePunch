@@ -63,6 +63,8 @@ void testApp::setup(){
 	popSound.setVolume(1);	
 	popSound.setMultiPlay(true);
 	
+	circleMask.loadImage("images/circleMask.png");
+	
 	// GUI
 	guiViewController	= [[GuiView alloc] initWithNibName:@"GuiView" bundle:nil];
 	[ofxiPhoneGetUIWindow() addSubview:guiViewController.view];
@@ -92,18 +94,14 @@ void testApp::update(){
 				int cameraPos = ((y * cvImageScaleFactor) * cameraWidth + ((x * cvImageScaleFactor) + 20)) * 3; // camera pix have 20px x offset for gutter
 				int grayPos = y * cvScaledWidth + x;	
 		
-				// go straight to grayscale... saves a CV step. Pick a channel here
-				// grayPixels[grayPos] = cameraPixels[cameraPos];  // R
+				// go straight to grayscale via green channel... saves a CV step
 				grayPixels[grayPos] = cameraPixels[cameraPos + 1]; // G
-				// grayPixels[grayPos] = cameraPixels[cameraPos + 2]; // B
 			}
 		}
 		
 		grayCv.setFromPixels(grayPixels, cvScaledWidth, cvScaledHeight);
 
 		houghCircles(grayCv);
-		
-		pix = grabber.getPixelsRef(); // do this here instead of draw?
 	}
 	
 	for (int i = 0; i < punched.size(); i++) {
@@ -194,23 +192,53 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			if (c.radius > 0) {
 				myCircles.push_back(c);
 				circID++;
-					
-				ofPixels pixCopy = pix;	
-				pixCopy.crop(pos.x - radius, (pos.y - radius), radius * 2 , radius * 2);
-					
-				ofTexture circleTexture;
-				circleTexture.allocate(radius * 2,radius * 2, GL_RGB);
-				circleTexture.loadData(pixCopy);
 				
-				particle circleParticle = particle(pos, circID, radius, circleTexture);
+				// Type conversion overkill to debug loadData() error
+				int cropX = round(pos.x - (float)radius);
+				int cropY = round(pos.y - (float)radius);
+				int cropWidth = round((float)radius * 2.0);
+				int cropHeight = round((float)radius * 2.0);
+				
+				// Create the circle texture
+				ofImage circleImage;
+				circleImage.allocate(cropWidth, cropHeight, OF_IMAGE_COLOR_ALPHA);
+
+				// Resize the mask to match circle
+				ofImage scaledCircleMask;
+				scaledCircleMask.setUseTexture(false);
+				scaledCircleMask.clone(circleMask); // copy image
+				scaledCircleMask.resize(cropWidth, cropHeight);
+				
+				unsigned char * cameraPixels = grabber.getPixels();
+				unsigned char * circlePixels = circleImage.getPixels();
+				unsigned char * maskPixels = scaledCircleMask.getPixels();
+				
+				for (int x = 0; x < cropWidth; x++){
+					for (int y = 0; y < cropHeight; y++){
+						int cameraPos = (((y + cropX) * cameraWidth) + (x + cropY)) * 3; // rgb
+						int circlePos = ((y * cropWidth) + x) * 4; // rgba
+						int maskPos = ((y * cropWidth) + x) * 3; // rgb (just a doesn't work!?)
+						
+						circlePixels[circlePos] = cameraPixels[cameraPos]; // R
+					  circlePixels[circlePos + 1] = cameraPixels[cameraPos + 1]; // G
+						circlePixels[circlePos + 2] = cameraPixels[cameraPos + 2]; // B				
+						circlePixels[circlePos + 3] = maskPixels[maskPos]; // A
+					}
+				}
+				
+				scaledCircleMask.clear();
+
+				circleImage.setFromPixels(circlePixels, cropWidth, cropHeight, OF_IMAGE_COLOR_ALPHA);
+				
+				particle circleParticle = particle(pos, circID, radius, circleImage);
 				punched.push_back(circleParticle);
 
-				// Play the sound. Bigger circles have lower pitch.
-				minCircleRadius = min((float)radius, minCircleRadius);
-				maxCircleRadius = max((float)radius, maxCircleRadius);
+				// Play the sound... Bigger circles have lower pitch
+				minCircleRadius = fminf((float)radius, minCircleRadius);
+				maxCircleRadius = fmaxf((float)radius, maxCircleRadius);
 				float playSpeed = ofMap(radius, minCircleRadius, maxCircleRadius, 3, 0.5);
 				
-				// Shake the phone.
+				// Shake the phone
 				vibrate();
 
 				popSound.setSpeed(playSpeed); // TODO tweak this range
