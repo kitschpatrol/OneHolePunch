@@ -1,16 +1,6 @@
-//
-//  circleTrack.cpp
-//  OneHolePunchDesktop
-//
-//  Created by Tamar Ziv on 27/1/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
 #include <iostream>
 #include "circleTrack.h"
 #include "ofMain.h"
-
-
 
 CircleTrack::CircleTrack( ofPoint _pos ) 
 {
@@ -39,7 +29,7 @@ void CircleTrack::draw ()
     
     
     if (drawMe) 
-    {	
+    {
         ofPushMatrix();
         ofTranslate(lerpPosX, lerpPosY, 0);						
         

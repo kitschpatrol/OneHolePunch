@@ -4,12 +4,14 @@
 GuiView * guiViewController;
 
 void testApp::setup(){	
-	ofSetFrameRate(30);	
+	ofSetFrameRate(30);
+	ofEnableAlphaBlending();	
 	ofxiPhoneSetOrientation(OFXIPHONE_ORIENTATION_PORTRAIT);
 	ofSetVerticalSync(true); // Does this actually do anything?
 	ofRegisterTouchEvents(this);
-	ofxiPhoneAlerts.addListener(this);	
+	//ofxiPhoneAlerts.addListener(this);	
 	ofxAccelerometer.setup();
+	ofSetCircleResolution(30);	
 	
 	cout << "OF Width: " << ofGetWidth() << endl;
 	cout << "OF Height: " << ofGetHeight() << endl;	
@@ -45,6 +47,9 @@ void testApp::setup(){
 	param2 = 20;
 	minRadius = 40;
 	maxRadius = 300;	
+	
+	// Circle tracking
+	tex.allocate(ofGetWidth(), ofGetHeight(), GL_RGB );	
 	
 	// Accelerometer Debug Arrow
 	arrow.loadImage("arrow.png");
@@ -96,6 +101,11 @@ void testApp::update(){
 		houghCircles(grayCv);
 	}
 	
+	for (int i = 0; i < punched.size(); i++) {
+		punched[i].update();
+		punched[i].mouse = ofVec3f(mouseX, mouseY, 0);
+	}
+	
 	ofSoundUpdate();	
 }
 
@@ -112,6 +122,10 @@ void testApp::draw(){
 	}
 
 	drawCircles();	
+	
+	for (int i = 0; i < punched.size(); i++) {
+		punched[i].draw();
+	}	
 }
 
 
@@ -124,36 +138,36 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 
 
 void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
-	
 	IplImage* gray = sourceImg.getCvImage();	
-	//cout << "blurAmount: " << blurAmount << endl;
-	cvSmooth( gray, gray, CV_GAUSSIAN, blurAmount, blurAmount); // smooth it, otherwise a lot of false circles may be detected // put a slider on it?
+	cvSmooth( gray, gray, CV_GAUSSIAN, blurAmount, blurAmount); // smooth it, otherwise a lot of false circles may be detected
 	CvMemStorage* storage = cvCreateMemStorage(0);	
-	//cout << "gray->width/8: " << gray->width/8 << endl; // 20
-	circles = cvHoughCircles(gray, storage, CV_HOUGH_GRADIENT, param1, param2, minRadius, maxRadius);
-	
+	//circles = cvHoughCircles(gray, storage, CV_HOUGH_GRADIENT, 2, gray->width/8, 300, 200 );
+	circles = cvHoughCircles(gray, storage, CV_HOUGH_GRADIENT, param1, param2, minRadius, maxRadius);	
 	currentTrackedCircleCount = circles->total;
-	//cout << "Number of Circles: " << circles->total << endl;	
 	
 	// find positions of CV circles
-	for (int i = 0; i < circles->total; i++) {
+	
+	for (int i = 0; i < circles->total; i++) 
+	{
 		float* p = (float*)cvGetSeqElem( circles, i );
 		ofPoint pos;
-		pos.x = cvPoint(cvRound(p[0]), cvRound(p[1])).x;  
-		pos.y = cvPoint(cvRound(p[0]), cvRound(p[1])).y;
-		pos.x = (int)ofMap(pos.x, 0, cvScaledWidth, 0, ofGetWidth()); // TODO variables here
-		pos.y = (int)ofMap(pos.y, 0, cvScaledHeight, 0, ofGetHeight()); // TODO variables here
-		int radius = ofMap(cvRound(p[2]), 0, cvScaledHeight, 0, ofGetHeight());
+		pos.x = cvPoint( cvRound(p[0]),cvRound(p[1]) ).x;  
+		pos.y = cvPoint( cvRound(p[0]),cvRound(p[1]) ).y;
+		pos.x = (int)pos.x;
+		pos.y = (int)pos.y;
+		int radius = cvRound( p[2] );
 		
 		bool cFound = false;
 		
-		for (int circs = 0; circs < myCircles.size(); circs++) {
+		for (int circs = 0; circs < myCircles.size(); circs++) 
+		{
 			ofPoint& posCirc = myCircles[circs].pos;
 			float dist = ofDistSquared(pos.x, pos.y, posCirc.x, posCirc.y);
 			//cout << "distance is: " << dist << endl;
 			
 			// check to see if there is a circle near an existing tracked circle
-			if ( dist < 1000 ) {
+			if ( dist < 1000 ) 
+			{
 				myCircles[circs].lastSeen = ofGetFrameNum();
 				myCircles[circs].radius = radius;
 				myCircles[circs].pos = pos;
@@ -162,8 +176,10 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			}
 		}
 		
-		if (!cFound) {
-			CircleTrack c;
+		if (!cFound) 
+		{
+			radius *=1.05;
+			CircleTrack c = CircleTrack( pos );
 			c.pos = pos;
 			c.radius = radius;
 			c.lastSeen = ofGetFrameNum();
@@ -173,43 +189,60 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 			c.iD = circID;
 			
 			if (c.radius) {
-				popSound.play();
-				
 				myCircles.push_back(c);
 				circID++;
+				
+				pix = grabber.getPixelsRef(); // do this here instead of draw?
+				
+				ofPixels pixCopy = pix;
+				pixCopy.crop( pos.x-radius, (pos.y-radius), radius*2 , radius*2 );
+				tex.loadData( pixCopy );
+				
+				ofTexture T;
+				T.allocate(radius*2,radius*2, GL_RGB);
+				T.loadData(pixCopy);
+				particle P = particle( pos,circID,radius,T  );
+				punched.push_back( P );
+				printf("punched %f,%f\n", pos.x,pos.y);
+				
 			}
 		}
 	}	
 	
 	cvReleaseMemStorage(&storage);
 	
-	for (int x = 0; x<myCircles.size(); x++) {
+	for ( int x = 0; x<myCircles.size(); x++ ) 
+	{
 		bool isSetupNow = myCircles[x].isSetUp;
-		if (!isSetupNow) {
+		if ( !isSetupNow ) {
 			myCircles[x].setup();
 		}
 	}
-
+	
+	
 	vector<CircleTrack>::iterator iter = myCircles.begin();
 	while (iter != myCircles.end()) {
 		
 		double life = iter->lastSeen;
 		int isAlive = iter->isAlive;
+    
+		// kill old particles;
 		
-		if ((ofGetFrameNum()-life) > 30 ) {
+		if ( (ofGetFrameNum()-life) > 50 ) 
+		{
 			
-			int iD = iter->iD;
 			ofPoint tracePos = iter->pos;
-			int	radiusT = iter->radius;
-			
 			iter = myCircles.erase(iter);
-			// cout << "shape deleted at: "<< tracePos.x << ", " << tracePos.y << endl;
+			cout << "shape deleted at: "<< tracePos.x << ", " << tracePos.y << endl;
+			
 			
 		} else {
 			
-			if (iter->isAlive > 3) {
+			if (iter->isAlive > 0) // used to be 3? 
+			{
 				iter->drawMe = true;
-			} else {
+			} else 
+			{
 				iter->drawMe = false;
 			}
 			iter++;
@@ -240,7 +273,6 @@ void testApp::disableDebug() {
 void testApp::drawAccelArrow() {
 	float angle = 180 - RAD_TO_DEG * atan2( ofxAccelerometer.getForce().y, ofxAccelerometer.getForce().x );
 	
-	ofEnableAlphaBlending();
 	ofSetColor(255);
 	ofPushMatrix();
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, 0);
@@ -248,12 +280,15 @@ void testApp::drawAccelArrow() {
 	ofRotateZ(angle);
 	arrow.draw(0,0);
 	ofPopMatrix();	
-	ofDisableAlphaBlending();
 }
 
 void testApp::exit() {
 	ofSoundStopAll();
 	ofSoundShutdown();
+}
+
+void testApp::vibrate() {
+	AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);	
 }
 
 //--------------------------------------------------------------

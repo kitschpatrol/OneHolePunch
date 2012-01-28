@@ -5,6 +5,7 @@
 #include "ofxiPhoneExtras.h"
 #include "ofxOpenCv.h" // Docs warn to include first?
 #include "circleTrack.h"
+#include "particle.h"
 
 class testApp : public ofxiPhoneApp{
 	
@@ -22,6 +23,8 @@ class testApp : public ofxiPhoneApp{
 
 		void enableDebug();
 		void disableDebug();
+	
+		void vibrate();
 	
 		// GUI parameters
 		int blurAmount;
@@ -56,6 +59,11 @@ class testApp : public ofxiPhoneApp{
 		IplImage* gray; 
 		int circID;
 		
+		// Circle Extraction
+		ofTexture tex;
+		ofPixels  pix;	
+        vector <particle> punched;	
+	
 		// Debug
 		bool debug;
 		void drawAccelArrow();
@@ -63,4 +71,6 @@ class testApp : public ofxiPhoneApp{
 	
 		// Sound
 		ofSoundPlayer  popSound;
+	
+
 };

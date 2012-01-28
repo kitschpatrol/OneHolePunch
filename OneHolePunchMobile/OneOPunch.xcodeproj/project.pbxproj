@@ -14,6 +14,9 @@
 		25042D3314D3910100CD11B3 /* GuiView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 25042D3114D3910100CD11B3 /* GuiView.mm */; };
 		25042D3414D3910100CD11B3 /* GuiView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25042D3214D3910100CD11B3 /* GuiView.xib */; };
 		251BC70314D3E746006B20C8 /* punched.wav in Resources */ = {isa = PBXBuildFile; fileRef = 251BC70214D3E746006B20C8 /* punched.wav */; };
+		251BC71114D45AC6006B20C8 /* particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 251BC70D14D45AC6006B20C8 /* particle.cpp */; };
+		251BC71214D45AC6006B20C8 /* circleTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 251BC71014D45AC6006B20C8 /* circleTrack.cpp */; };
+		25660BE014D46533000EA460 /* mask.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25660BDF14D46533000EA460 /* mask.tif */; };
 		25974D4A14D28F5C0047A058 /* opencv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25974D4914D28F5C0047A058 /* opencv.a */; };
 		259da76c028adaa20996723e102a6ccd /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ce9c7160245b19131dae61282ee6cb53 /* ofxCvColorImage.cpp */; };
 		25EFB38C14D3E17B007CC58F /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 25EFB38714D3E17B007CC58F /* arrow.png */; };
@@ -63,11 +66,15 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* OneOPunch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneOPunch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		25042D1114D342B800CD11B3 /* circleTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = circleTrack.h; sourceTree = "<group>"; };
 		25042D3014D3910100CD11B3 /* GuiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuiView.h; sourceTree = "<group>"; };
 		25042D3114D3910100CD11B3 /* GuiView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GuiView.mm; sourceTree = "<group>"; };
 		25042D3214D3910100CD11B3 /* GuiView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GuiView.xib; sourceTree = "<group>"; };
 		251BC70214D3E746006B20C8 /* punched.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = punched.wav; sourceTree = "<group>"; };
+		251BC70D14D45AC6006B20C8 /* particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = particle.cpp; sourceTree = "<group>"; };
+		251BC70E14D45AC6006B20C8 /* particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = particle.h; sourceTree = "<group>"; };
+		251BC70F14D45AC6006B20C8 /* circleTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = circleTrack.h; sourceTree = "<group>"; };
+		251BC71014D45AC6006B20C8 /* circleTrack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = circleTrack.cpp; sourceTree = "<group>"; };
+		25660BDF14D46533000EA460 /* mask.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = mask.tif; sourceTree = "<group>"; };
 		25974D4914D28F5C0047A058 /* opencv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = opencv.a; path = ../../../addons/ofxOpenCv/libs/opencv/lib/iphone/opencv.a; sourceTree = "<group>"; };
 		25EFB38714D3E17B007CC58F /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		25EFB38814D3E17B007CC58F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -167,6 +174,7 @@
 		25EFB38614D3E17B007CC58F /* images */ = {
 			isa = PBXGroup;
 			children = (
+				25660BDF14D46533000EA460 /* mask.tif */,
 				25EFB38714D3E17B007CC58F /* arrow.png */,
 				25EFB38814D3E17B007CC58F /* Default.png */,
 				25EFB38914D3E17B007CC58F /* Default@2x.png */,
@@ -276,10 +284,13 @@
 			isa = PBXGroup;
 			children = (
 				25042D2F14D3910100CD11B3 /* gui */,
+				251BC70E14D45AC6006B20C8 /* particle.h */,
+				251BC70D14D45AC6006B20C8 /* particle.cpp */,
+				251BC70F14D45AC6006B20C8 /* circleTrack.h */,
+				251BC71014D45AC6006B20C8 /* circleTrack.cpp */,
 				E4D8936B11527B74007E1F53 /* main.mm */,
 				E4D8936C11527B74007E1F53 /* testApp.h */,
 				E4D8936D11527B74007E1F53 /* testApp.mm */,
-				25042D1114D342B800CD11B3 /* circleTrack.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -396,6 +407,7 @@
 				25EFB39014D3E17B007CC58F /* OneHolePunchIcon4.png in Resources */,
 				25EFB39314D3E4B1007CC58F /* punched.caf in Resources */,
 				251BC70314D3E746006B20C8 /* punched.wav in Resources */,
+				25660BE014D46533000EA460 /* mask.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,6 +444,8 @@
 				7829c785a0dd56718cb46bcc3b066ff1 /* ofxCvHaarFinder.cpp in Sources */,
 				0b2e55fee13134ce9b57d3bffd6d5dab /* ofxCvShortImage.cpp in Sources */,
 				25042D3314D3910100CD11B3 /* GuiView.mm in Sources */,
+				251BC71114D45AC6006B20C8 /* particle.cpp in Sources */,
+				251BC71214D45AC6006B20C8 /* circleTrack.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,7 +464,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Eric Mika";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPhone_Prefix.pch;
 				INFOPLIST_FILE = "ofxiphone-Info.plist";
@@ -462,7 +476,8 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = OneOPunch;
-				PROVISIONING_PROFILE = "6E7B9E2F-B172-4248-AFC9-F88D950D4583";
+				PROVISIONING_PROFILE = "";
+				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -470,7 +485,7 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Eric Mika";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPhone_Prefix.pch;
 				INFOPLIST_FILE = "ofxiphone-Info.plist";
@@ -482,7 +497,8 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = OneOPunch;
-				PROVISIONING_PROFILE = "6E7B9E2F-B172-4248-AFC9-F88D950D4583";
+				PROVISIONING_PROFILE = "";
+				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -510,6 +526,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				WARNING_LDFLAGS = "-no_arch_warnings";
 			};
@@ -535,6 +552,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				WARNING_LDFLAGS = "-no_arch_warnings";
 			};
