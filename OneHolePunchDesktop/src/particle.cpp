@@ -7,6 +7,9 @@
  *
  */
 
+#define BOUNCE_FACTOR			0.7
+#define ACCELEROMETER_FORCE		0.2
+
 #include "particle.h"
 #include "ofMain.h"
 
@@ -24,6 +27,7 @@ particle::particle( ofVec3f _pos, int _id, float _size, ofTexture _tex ) {
 
     vel = ofVec3f(0,0,0);					// initiate velocity	
 	acc = ofVec3f(0,0,0);					// initiate acceleration
+    mouse = ofVec3f(0,0,0);					// initiate acceleration
 	damping = 1; //2; //0.05;
     
     myMask.loadImage("mask.tif");
@@ -37,7 +41,7 @@ particle::particle( ofVec3f _pos, int _id, float _size, ofTexture _tex ) {
 
 void particle::update() {
 	
-    
+    /*
 	life--;
 
 	float randomness = 10.0;
@@ -74,8 +78,39 @@ void particle::update() {
     size *= 0.95;
     size = ofClamp(size, 20, 1000);
     
+    */
     
-	
+    //  vel.x += ACCELEROMETER_FORCE * ofxAccelerometer.getForce().x * ofRandomuf();
+    //  vel.y += -ACCELEROMETER_FORCE * ofxAccelerometer.getForce().y * ofRandomuf();        // this one is subtracted cos world Y is opposite to opengl Y
+
+    ofVec3f dif = mouse - pos;
+    dif.normalize();
+    
+    vel.x += ACCELEROMETER_FORCE * dif.x * ofRandomuf();
+    vel.y += -ACCELEROMETER_FORCE * dif.y * ofRandomuf();        // this one is subtracted cos world Y is opposite to opengl Y
+    
+    // add vel to pos
+    pos += vel;
+    
+    // check boundaries
+    if(pos.x < size) {
+        pos.x = size;
+        vel.x *= -BOUNCE_FACTOR;
+    } else if(pos.x >= ofGetWidth() - size) {
+        pos.x = ofGetWidth() - size;
+        vel.x *= -BOUNCE_FACTOR;
+    }
+    
+    if(pos.y < size) {
+        pos.y = size;
+        vel.y *= -BOUNCE_FACTOR;
+    } else if(pos.y >= ofGetHeight() - size) {
+        pos.y = ofGetHeight() - size;
+        vel.y *= -BOUNCE_FACTOR; 
+    }
+    
+    size *= 0.95;
+    size = ofClamp(size, 20, 1000);
 }
 	
 
@@ -95,19 +130,20 @@ void particle::draw() {
         myMask.resize(size*2,size*2);
         myMask.draw(0, 0, 0);
         
-        
-        
+    
         // draw the images
         
         glColorMask(true,true,true,true);  
         glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA);  
         glColor4f(1,1,1,0.8f);  
         texture.draw(0,0,size*2,size*2);
+    
 	ofPopStyle();
 	ofPopMatrix();
 
 }
 
+/*
 void particle::goToTarget(ofVec3f _posTarg, float _multiplier)
 {
 	posAttract = _posTarg;
@@ -130,3 +166,4 @@ void particle::setAccel(ofVec3f _acc)
 void particle::die() {
 	
 }
+*/
