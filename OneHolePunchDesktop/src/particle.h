@@ -21,19 +21,21 @@ class particle {
 
     ofVec3f posAttract;
 	ofVec3f posRepel;
-	int force, pId;
 	
 	ofVec3f pos;
 	ofVec3f vel;
 	ofVec3f acc;
     
+    int force, pId;
 	int life;
 	int initLife;
 	int damping;
 	float size, iniSize;
+    
+    int appWidth,appHeight;
+    
     ofTexture texture;
     ofImage myMask;
-    ofImage myCircle;
 	
 	void update();
 	void draw();

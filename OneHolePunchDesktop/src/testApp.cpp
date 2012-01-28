@@ -42,6 +42,12 @@ void testApp::update(){
         
         for ( int i=0 ; i<punched.size(); i++) {
             punched[i].update();
+            punched[i].goToTarget( ofVec3f( mouseX,mouseY,0), 100);
+            
+            for ( int j=0 ; j<punched.size(); j++) 
+            {
+                if ( j != i ) punched[i].runFromTarget( punched[j].pos,1 );
+            }
         }
 	}
 }

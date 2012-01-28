@@ -68,23 +68,18 @@ class testApp : public ofBaseApp{
         
         void houghCircles( ofxCvGrayscaleImage sourceImg );		/// calculate circle detection
         void drawCircles();
-        
-        ofxCvRoiMode mode;
-    
-    
+            
         vector <CircleTrack> myCircles;
-        vector <ofTexture> myTextures;
         vector <particle> punched;
 
         CvMemStorage* storage;
         CvSeq* circles;
         IplImage* gray; 
+    
         int circID;
+
         ofPoint previousPos;
         float previousRadius;
-        
-        string fNameSaved;
-    
         float lerpPosX;
         float lerpPosY;    
         float lerpRad;

@@ -28,12 +28,16 @@ particle::particle( ofVec3f _pos, int _id, float _size, ofTexture _tex ) {
     
     myMask.loadImage("mask.tif");
 	myMask.resize(size*2,size*2);
+    
+    appWidth = ofGetWidth();
+    appHeight = ofGetHeight();
 
 }
 
 
 void particle::update() {
 	
+    
 	life--;
 
 	float randomness = 10.0;
@@ -41,7 +45,7 @@ void particle::update() {
 	int div = 4000;
 	
     // initiate velocity for debugging	
-    vel = ofVec3f(0,1,0);	
+    //vel = ofVec3f(0,1,0);	
     
 	// forces etc 
 	ofVec3f rand = ofVec3f(ofRandom(-randomness, +randomness),ofRandom(-randomness, +randomness),0);
@@ -56,14 +60,21 @@ void particle::update() {
 	acc += -force*diffRepel;
 
 	acc *= damping;
+
 	vel += acc;
 	vel.limit(5);
 	pos += vel;
 	acc *=0;
 	vel *=0;
+    
+    ofPoint bounds = ofPoint( appWidth,appHeight );
+    pos.x = ofClamp( pos.x , size, appWidth-size );
+    pos.y = ofClamp( pos.y , size, appHeight-size );
         
     size *= 0.95;
     size = ofClamp(size, 20, 1000);
+    
+    
 	
 }
 	
