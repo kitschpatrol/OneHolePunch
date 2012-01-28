@@ -30,7 +30,10 @@ class testApp : public ofxiPhoneApp{
 		
 		ofxCvColorImage colorCv;
 	//		ofxCvColorImage colorCvSmall;
-		ofxCvGrayscaleImage grayCv;
+		
+	
+	
+	ofxCvGrayscaleImage grayCv;
 
 	int colorWidth;
 	int colorHeight;
@@ -38,6 +41,8 @@ class testApp : public ofxiPhoneApp{
 	// GUI
 	bool drawDebug;
 	
+	
+	ofImage colorView;
 
 	
 	

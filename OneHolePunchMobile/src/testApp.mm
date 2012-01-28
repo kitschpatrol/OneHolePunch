@@ -4,31 +4,27 @@
 void testApp::setup(){	
 	ofSetFrameRate(30);	
 	ofxiPhoneSetOrientation(OFXIPHONE_ORIENTATION_PORTRAIT);
-
-
-	
-
-	//ofxiPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_LEFT);	
 	ofSetVerticalSync(true);
 	
 	grabber.setDesiredFrameRate(30);
-	grabber.initGrabber(640, 480, false); // Init sizes seem to do nothing at all, don't use texture
+	
+	cout << "OF Width: " << ofGetWidth() << endl;
+	cout << "OF Height: " << ofGetHeight() << endl;	
+	
+	// Camera view is wider than screen!!!
+	grabber.initGrabber(360, 480, true); // Init sizes seem to do nothing at all, this is native iphone live feed res.
 
+	// this is screen aspect ratio-consistent crop from grabber
+	// there will be gutters!
+	float cvImageScaleFactor = 1; // divide by this for CV, use power of two // TODO this is broken!	
+	grayCv.allocate(320 / cvImageScaleFactor, 480 / cvImageScaleFactor);
 	
-	// User-facing image
-	colorWidth = 100;
-	colorHeight = 100;
-	
-	float cvImageScaleFactor = 1; // divide by this for CV, use power of two
-	
-	colorCv.allocate(colorWidth, colorHeight);
-	grayCv.allocate(colorWidth / cvImageScaleFactor, colorHeight / cvImageScaleFactor);
 	
 	CvSeq* circles = new CvSeq;
 	
 	circID = 0;	
 	
-	drawDebug = false;
+	drawDebug = true;
 }
 
 //--------------------------------------------------------------
@@ -40,24 +36,30 @@ void testApp::update(){
 	if (grabber.isFrameNew()) {
 		
 		// crop out the color pixels we want
+		
+		
+		
 		unsigned char * cameraPixels = grabber.getPixels();
-		unsigned char * colorPixels = colorCv.getPixels();
+		unsigned char * grayPixels = grayCv.getPixels();
 	
-		for (int x = 0; x < colorWidth; x++){
-			for (int y = 0; y < colorHeight; y++){
-				int cameraPos = (y * grabber.getWidth() + x) * 3;
-				int colorPos = (y * colorWidth + x) * 3;	
+		// aspect-correct workable size is 320 x 480
+		// camera feed is 360 x 480
+		// TODO resize?
+		
+		for (int x = 0; x < 320; x++){
+			for (int y = 0; y < 480; y++){
+				int cameraPos = (y * 360 + (x + 20)) * 3; // camera pix have 20px x offset for gutter
+				int grayPos = y * 320 + x;	
 				
-				colorPixels[colorPos] = cameraPixels[cameraPos];  // R
-				colorPixels[colorPos + 1] = cameraPixels[cameraPos + 1]; // G
-				colorPixels[colorPos + 2] = cameraPixels[cameraPos + 2]; // B
+				// Use green channel for grayscale trasi
+				// grayPixels[grayPos] = cameraPixels[cameraPos];  // R
+				grayPixels[grayPos] = cameraPixels[cameraPos + 1]; // G
+				// grayPixels[grayPos] = cameraPixels[cameraPos + 2]; // B
 			}
 		}
 		
-		colorCv.setFromPixels(colorPixels, colorWidth, colorHeight);
+		grayCv.setFromPixels(grayPixels, 320, 480);
 
-		//	colorCv = grabber.getPixels();
-//		grayCv = colorCv;
 //		houghCircles(grayCv);
 	}
 	
@@ -71,12 +73,13 @@ void testApp::draw(){
 	ofSetColor(255);
 	
 	if (drawDebug) {
-		grayCv.draw(0,0);
+		grayCv.draw(0, 0, 720, 960);
 	}
 	else {
-		//grabber.draw(0, 0);
-		colorCv.draw(0, 0);		
+		grabber.draw(-40, 0, 720, 960);
 	}
+	
+
 
 	//drawCircles();	
 }
