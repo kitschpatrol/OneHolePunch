@@ -5,26 +5,34 @@ void testApp::setup(){
 	ofSetFrameRate(30);	
 	ofxiPhoneSetOrientation(OFXIPHONE_ORIENTATION_PORTRAIT);
 	ofSetVerticalSync(true);
-	
-	grabber.setDesiredFrameRate(30);
-	
+
 	cout << "OF Width: " << ofGetWidth() << endl;
 	cout << "OF Height: " << ofGetHeight() << endl;	
 	
 	// Camera view is wider than screen!!!
-	grabber.initGrabber(360, 480, true); // Init sizes seem to do nothing at all, this is native iphone live feed res.
+	grabber.setDesiredFrameRate(30);	
+	grabber.initGrabber(cameraWidth, cameraHeight, true); // Init sizes seem to do nothing at all, this is native iphone live feed res.
 
 	// this is screen aspect ratio-consistent crop from grabber
 	// there will be gutters!
-	float cvImageScaleFactor = 1; // divide by this for CV, use power of two // TODO this is broken!	
-	grayCv.allocate(320 / cvImageScaleFactor, 480 / cvImageScaleFactor);
 	
+	
+	// set up cv image, this is where we search for circles
+	cvImageScaleFactor = 2; // divide by this for CV, use power of two
+	cvScaledWidth = cvOriginalWidth / cvImageScaleFactor;
+	cvScaledHeight = cvOriginalHeight / cvImageScaleFactor;	
+	
+	cout << "cvScaledWidth: " << cvScaledWidth << endl;
+	cout << "cvScaledHeight: " << cvScaledHeight << endl;	
+	
+	grayCv.allocate(cvScaledWidth, cvScaledHeight);
 	
 	CvSeq* circles = new CvSeq;
 	
 	circID = 0;	
 	
-	drawDebug = true;
+	// todo disable grayCv texture if not drawing?
+	drawDebug = false;
 }
 
 //--------------------------------------------------------------
@@ -35,36 +43,29 @@ void testApp::update(){
 	
 	if (grabber.isFrameNew()) {
 		
-		// crop out the color pixels we want
-		
-		
-		
+		// crop out the pixels we want from the grabber
+		// this is weird because aspect-correct workable size is 320 x 480
+		// but camera feed is 360 x 480
+		// so we grab from the center of the camera feed
 		unsigned char * cameraPixels = grabber.getPixels();
 		unsigned char * grayPixels = grayCv.getPixels();
-	
-		// aspect-correct workable size is 320 x 480
-		// camera feed is 360 x 480
-		// TODO resize?
 		
-		for (int x = 0; x < 320; x++){
-			for (int y = 0; y < 480; y++){
-				int cameraPos = (y * 360 + (x + 20)) * 3; // camera pix have 20px x offset for gutter
-				int grayPos = y * 320 + x;	
-				
-				// Use green channel for grayscale trasi
+		for (int x = 0; x < cvScaledWidth; x++){
+			for (int y = 0; y < cvScaledHeight; y++){
+				int cameraPos = ((y * cvImageScaleFactor) * cameraWidth + ((x * cvImageScaleFactor) + 20)) * 3; // camera pix have 20px x offset for gutter
+				int grayPos = y * cvScaledWidth + x;	
+		
+				// go straight to grayscale... saves a CV step. Pick a channel here
 				// grayPixels[grayPos] = cameraPixels[cameraPos];  // R
 				grayPixels[grayPos] = cameraPixels[cameraPos + 1]; // G
 				// grayPixels[grayPos] = cameraPixels[cameraPos + 2]; // B
 			}
 		}
 		
-		grayCv.setFromPixels(grayPixels, 320, 480);
+		grayCv.setFromPixels(grayPixels, cvScaledWidth, cvScaledHeight);
 
-//		houghCircles(grayCv);
+		houghCircles(grayCv);
 	}
-	
-	//	colorCvSmall.scaleIntoMe(colorCv, CV_INTER_NN);
-	// grayCv = colorCvSmall;
 }
 
 //--------------------------------------------------------------
@@ -73,15 +74,17 @@ void testApp::draw(){
 	ofSetColor(255);
 	
 	if (drawDebug) {
-		grayCv.draw(0, 0, 720, 960);
+		grayCv.draw(0, 0, 640, 960);
+		
 	}
 	else {
 		grabber.draw(-40, 0, 720, 960);
 	}
 	
-
-
-	//drawCircles();	
+	// grayCv.draw(0, 0);	
+	// grayCv.draw(0, 0, 640, 960);	
+	
+	drawCircles();	
 }
 
 //--------------------------------------------------------------
@@ -129,8 +132,8 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		ofPoint pos;
 		pos.x = cvPoint( cvRound(p[0]),cvRound(p[1]) ).x;  
 		pos.y = cvPoint( cvRound(p[0]),cvRound(p[1]) ).y;
-		pos.x = (int)pos.x;
-		pos.y = (int)pos.y;
+		pos.x = (int)ofMap(pos.x, 0, 320, 0, ofGetWidth()); // TODO variables here
+		pos.y = (int)ofMap(pos.y, 0, 480, 0, ofGetHeight()); // TODO variables here
 		int radius = cvRound( p[2] );
 		
 		bool cFound = false;

@@ -35,8 +35,15 @@ class testApp : public ofxiPhoneApp{
 	
 	ofxCvGrayscaleImage grayCv;
 
-	int colorWidth;
-	int colorHeight;
+	
+	static const int cameraWidth = 360;
+	static const int cameraHeight = 480;	
+	static const int cvOriginalWidth = 320;
+	static const int cvOriginalHeight = 480;
+	
+	float cvImageScaleFactor;	
+	int cvScaledWidth;
+	int cvScaledHeight;
 	
 	// GUI
 	bool drawDebug;
