@@ -1,7 +1,7 @@
 #include "particle.h"
 
 float particle::bounceFactor = 0.2;
-float particle::accelerometerForce = 0.8;	
+float particle::accelerometerForce = 3;	
 
 particle::particle( ofVec3f _pos, int _id, float _size, ofImage _circleImage) {
 	circleImage = _circleImage;

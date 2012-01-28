@@ -52,7 +52,7 @@ void testApp::setup(){
 	
 	// Initialize Particles
 	particle::bounceFactor = 0.2;
-	particle::accelerometerForce = 0.8;	
+	particle::accelerometerForce = 3;	
 	
 	// Accelerometer Debug Arrow
 	arrow.loadImage("arrow.png");
@@ -148,28 +148,25 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 	currentTrackedCircleCount = circles->total;
 	
 	// find positions of CV circles
-	
 	for (int i = 0; i < circles->total; i++) 
 	{
 		float* p = (float*)cvGetSeqElem( circles, i );
 		ofPoint pos;
-		pos.x = cvPoint( cvRound(p[0]),cvRound(p[1]) ).x;  
-		pos.y = cvPoint( cvRound(p[0]),cvRound(p[1]) ).y;
-		pos.x = (int)pos.x;
-		pos.y = (int)pos.y;
-		int radius = cvRound( p[2] );
+		
+		// transform to camera world
+		pos.x = (int)cvPoint(cvRound(p[0]),cvRound(p[1])).x; // (int)ofMap(cvPoint(cvRound(p[0]),cvRound(p[1])).x, 0, cvScaledWidth, 0, cameraWidth - 80) + 40;  
+		pos.y = (int)cvPoint(cvRound(p[0]),cvRound(p[1])).y; //(int)ofMap(cvPoint(cvRound(p[0]),cvRound(p[1])).y, 0, cvScaledHeight, 0, cameraHeight);
+		int radius = (int)cvRound(p[2]); //(int)ofMap(cvRound(p[2]), 0, cvScaledHeight, 0, cameraHeight);
 		
 		bool cFound = false;
 		
-		for (int circs = 0; circs < myCircles.size(); circs++) 
-		{
+		for (int circs = 0; circs < myCircles.size(); circs++) {
 			ofPoint& posCirc = myCircles[circs].pos;
 			float dist = ofDistSquared(pos.x, pos.y, posCirc.x, posCirc.y);
 			//cout << "distance is: " << dist << endl;
 			
 			// check to see if there is a circle near an existing tracked circle
-			if ( dist < 1000 ) 
-			{
+			if ( dist < 1000 ) {
 				myCircles[circs].lastSeen = ofGetFrameNum();
 				myCircles[circs].radius = radius;
 				myCircles[circs].pos = pos;
@@ -194,10 +191,16 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 				circID++;
 				
 				// Type conversion overkill to debug loadData() error
-				int cropX = round(pos.x - (float)radius);
-				int cropY = round(pos.y - (float)radius);
-				int cropWidth = round((float)radius * 2.0);
-				int cropHeight = round((float)radius * 2.0);
+				int cropX = ofMap(pos.x - radius, 0, cvScaledWidth, 20, cameraWidth - 20);
+				int cropY = ofMap(pos.y - radius, 0, cvScaledHeight, 0, cameraHeight);
+				int cropWidth = ofMap(radius * 2, 0, cvScaledWidth, 0, cameraWidth - 40); // shrink camera
+				int cropHeight = ofMap(radius * 2, 0, cvScaledHeight, 0, cameraHeight);
+				
+				
+				cout << "Cropx: " << cropX << endl;
+				cout << "Cropy: " << cropY << endl;
+				cout << "Cropw: " << cropWidth << endl;
+				cout << "Croph: " << cropHeight << endl;	
 				
 				// Create the circle texture
 				ofImage circleImage;
@@ -215,7 +218,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 				
 				for (int x = 0; x < cropWidth; x++){
 					for (int y = 0; y < cropHeight; y++){
-						int cameraPos = (((y + cropX) * cameraWidth) + (x + cropY)) * 3; // rgb
+						int cameraPos = (((y + cropY) * cameraWidth) + (x + cropX)) * 3; // rgb
 						int circlePos = ((y * cropWidth) + x) * 4; // rgba
 						int maskPos = ((y * cropWidth) + x) * 3; // rgb (just a doesn't work!?)
 						
@@ -267,8 +270,7 @@ void testApp::houghCircles( ofxCvGrayscaleImage sourceImg) {
 		int isAlive = iter->isAlive;
     
 		// kill old particles;
-		if ( (ofGetFrameNum()-life) > 50 ) 
-		{
+		if ( (ofGetFrameNum()-life) > 15) {
 			
 			ofPoint tracePos = iter->pos;
 			iter = myCircles.erase(iter);
