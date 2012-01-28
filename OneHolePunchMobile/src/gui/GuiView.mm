@@ -18,19 +18,23 @@
 }
 
 //----------------------------------------------------------------
--(void)setStatusString:(NSString *)trackStr{
+-(void)setStatusString:(NSString *)trackStr {
 	displayText.text = trackStr;
 }
 
 
+-(void)setFPSString:(NSString *)fpsStr {
+	fpsText.text = fpsStr;
+}
+
+
 //----------------------------------------------------------------
--(IBAction)hide:(id)sender{
+-(IBAction)back:(id)sender {
 	self.view.hidden = YES;
 }
 
 
--(IBAction)adjustLerpRad:(id)sender;
-{
+-(IBAction)adjustLerpRad:(id)sender {
  	UISlider * slider = sender;
 	printf("slider adjustLerpRad is - %f\n", [slider value]);
 	
@@ -41,7 +45,7 @@
 }
 //----------------------------------------------------------------
 
--(IBAction)adjustLerpPos:(id)sender;
+-(IBAction)adjustLerpPos:(id)sender
 {
  	UISlider * slider = sender;
 	printf("slider adjustLerpPos is - %f\n", [slider value]);
@@ -54,7 +58,7 @@
 //----------------------------------------------------------------
 
 
--(IBAction)adjustHueRes:(id)sender;
+-(IBAction)adjustHueRes:(id)sender
 {
  	UISlider * slider = sender;
 	printf("slider adjustHueRes is - %f\n", [slider value]);

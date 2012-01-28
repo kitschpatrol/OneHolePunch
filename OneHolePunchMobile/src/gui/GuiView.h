@@ -12,11 +12,14 @@
 
 @interface GuiView : UIViewController {
 	IBOutlet UILabel *displayText;
+	IBOutlet UILabel *fpsText;
+	IBOutlet UILabel *other;	
 	
 	testApp *myApp;		// points to our instance of testApp
 }
 
 -(void)setStatusString:(NSString *)trackStr;
+-(void)setFPSString:(NSString *)fpsStr;
 
 // our circle finder sliders
 -(IBAction)adjustLerpRad:(id)sender;
@@ -27,6 +30,6 @@
 -(IBAction)adjustHueParam1:(id)sender;
 -(IBAction)adjustHueParam2:(id)sender;
 
--(IBAction)hide:(id)sender;
+-(IBAction)back:(id)sender;
 
 @end
